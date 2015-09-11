@@ -1,24 +1,26 @@
 /*
-  Blink
-  Turns on an LED on for one second, then off for one second, repeatedly.
-
-  Most Arduinos have an on-board LED you can control. On the Uno and
-  Leonardo, it is attached to digital pin 13. If you're unsure what
-  pin the on-board LED is connected to on your Arduino model, check
-  the documentation at http://www.arduino.cc
-
-  This example code is in the public domain.
-
-  modified 8 May 2014
-  by Scott Fitzgerald
+  Dice
+  Creates a dice face with the press of a button
+  
+  by Idar Vassdal
  */
+
+// Initialize die faces
+const int DIE_NONE[] = {-1}; // NO LIGHTS
+const int DIE_ONE[] = {7, -1}; 
+const int DIE_TWO[] = {11, 9, -1};
+const int DIE_THREE[] = {12, 8, 7, -1};
+const int DIE_FOUR[] = {12, 11, 9, 8, -1};
+const int DIE_FIVE[] = {12, 11, 9, 8, 7, -1};
+const int DIE_SIX[] = {13, 12, 11, 10, 9, 8, -1};
+
+// Initialize button
+int buttonState = 0;
+const int buttonPin = 4;
+
 bool is_value_in_array(int val, const int *arr) {
   int i;
   for (i = 0; arr[i] != -1; i++) {
-    if(i > 5){
-      Serial.print("WTF");
-      delay(10000);
-    }
     if (arr[i] == val)
       return true;
     }
@@ -35,6 +37,15 @@ void light_up(const int *head) {
   }
 }
 
+void play_animation_count(){
+  const int *dices[7] = {DIE_ONE, DIE_TWO, DIE_THREE, DIE_FOUR, DIE_FIVE, DIE_SIX, DIE_NONE};
+  int array_of_dies_size = 7;
+  for(int i = 0; i < array_of_dies_size; i++){
+    light_up(dices[i]);
+    delay(200);
+  }
+}
+
 // the setup function runs once when you press reset or power the board
 void setup() {
   // initialize digital output pins
@@ -47,37 +58,34 @@ void setup() {
   pinMode(8, OUTPUT);
   pinMode(7, OUTPUT);
   pinMode(4, INPUT);
-}
-const int DIE_NONE[] = {-1};
-const int DIE_ONE[] = {7, -1};
-const int DIE_TWO[] = {11, 9, -1};
-const int DIE_THREE[] = {12, 8, 7, -1};
-const int DIE_FOUR[] = {12, 11, 9, 8, -1};
-const int DIE_FIVE[] = {12, 11, 9, 8, 7, -1};
-const int DIE_SIX[] = {13, 12, 11, 10, 9, 8, -1};
-int buttonState = 0;
-const int buttonPin = 4; 
-
+} 
 
 // the loop function runs over and over again forever
 void loop() {
-//  light_up(DIE_ONE);
-//  delay(1000);
-//  light_up(DIE_TWO);
-//  delay(1000);
-//  light_up(DIE_THREE);
-//  delay(1000);
-//  light_up(DIE_FOUR);
-//  delay(1000);
-//  light_up(DIE_FIVE);
-//  delay(1000);
-//  light_up(DIE_SIX);
-//  delay(1000);
   buttonState = digitalRead(buttonPin);
   if(buttonState == HIGH){
-    light_up(DIE_THREE);
-    delay(1000);
-    light_up(DIE_NONE);
+    int die_face_numb = 1 + (rand() % 6);
+    
+    play_animation_count();
+    
+    if(die_face_numb == 1){
+      light_up(DIE_ONE);
+    }
+    if(die_face_numb == 2){
+      light_up(DIE_TWO);
+    }
+    if(die_face_numb == 3){
+      light_up(DIE_THREE);
+    }
+    if(die_face_numb == 4){
+      light_up(DIE_FOUR);
+    }
+    if(die_face_numb == 5){
+      light_up(DIE_FIVE);
+    }
+    if(die_face_numb == 6){
+      light_up(DIE_SIX);
+    }
   }
 }
 

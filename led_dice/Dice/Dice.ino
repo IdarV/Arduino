@@ -108,7 +108,7 @@ void loop() {
   buttonState = digitalRead(buttonPin);
 
   if (buttonState == HIGH) {
-    int die_face = random(1, 6);
+    int die_face = random(1, 7);
 
     play_animation_spin();
     play_animation_count();

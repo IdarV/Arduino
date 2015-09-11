@@ -12,21 +12,73 @@
   modified 8 May 2014
   by Scott Fitzgerald
  */
+bool is_value_in_array(int val, const int *arr) {
+  int i;
+  for (i = 0; arr[i] != -1; i++) {
+    if(i > 5){
+      Serial.print("WTF");
+      delay(10000);
+    }
+    if (arr[i] == val)
+      return true;
+    }
+  return false;
+}
 
+void light_up(const int *head) {
+  for (int i = 7; i <= 13; i++) {
+    if (is_value_in_array(i, head)) {
+      digitalWrite(i, HIGH);
+    } else {
+      digitalWrite(i, LOW);
+    }
+  }
+}
 
 // the setup function runs once when you press reset or power the board
 void setup() {
-  // initialize digital pin 13 as an output.
+  // initialize digital output pins
+  Serial.begin(9600);
   pinMode(13, OUTPUT);
   pinMode(12, OUTPUT);
+  pinMode(11, OUTPUT);
+  pinMode(10, OUTPUT);
+  pinMode(9, OUTPUT);
+  pinMode(8, OUTPUT);
+  pinMode(7, OUTPUT);
+  pinMode(4, INPUT);
 }
+const int DIE_NONE[] = {-1};
+const int DIE_ONE[] = {7, -1};
+const int DIE_TWO[] = {11, 9, -1};
+const int DIE_THREE[] = {12, 8, 7, -1};
+const int DIE_FOUR[] = {12, 11, 9, 8, -1};
+const int DIE_FIVE[] = {12, 11, 9, 8, 7, -1};
+const int DIE_SIX[] = {13, 12, 11, 10, 9, 8, -1};
+int buttonState = 0;
+const int buttonPin = 4; 
+
 
 // the loop function runs over and over again forever
 void loop() {
-  digitalWrite(13, HIGH);   // turn the LED on (HIGH is the voltage level)
-  digitalWrite(12, LOW);   // turn the LED on (HIGH is the voltage level)
-  delay(1000);              // wait for a second
-  digitalWrite(13, LOW);    // turn the LED off by making the voltage LOW
-  digitalWrite(12, HIGH);   // turn the LED off by making the voltage LOW
-  delay(1000);              // wait for a second
+//  light_up(DIE_ONE);
+//  delay(1000);
+//  light_up(DIE_TWO);
+//  delay(1000);
+//  light_up(DIE_THREE);
+//  delay(1000);
+//  light_up(DIE_FOUR);
+//  delay(1000);
+//  light_up(DIE_FIVE);
+//  delay(1000);
+//  light_up(DIE_SIX);
+//  delay(1000);
+  buttonState = digitalRead(buttonPin);
+  if(buttonState == HIGH){
+    light_up(DIE_THREE);
+    delay(1000);
+    light_up(DIE_NONE);
+  }
 }
+
+

@@ -1,0 +1,19 @@
+Rapport for Exam01
+IdarV
+ 
+==================
+
+I started off with trying to understand how the matrix worked. I kind of understood how the 
+MAX7219  worked, so it was most important to see how the matrix worked. This was harder
+than expected, since most results on Google showed that people used a chip with the LED-
+Driver and the LED-matrix already on one board like this : 
+http://forums.parallax.com/attachment.php?attachmentid=105755&d=1387966996 .
+
+Then, deep down in an unknown comment section, I read that it's not dangerous to manually
+connect power to one of the led's. It said that i should connect HIGH to the rows, and LOW 
+to the columns, so I wrote HIGH to one and LOW to another, and started matching them 
+to random pins. I also used a 220 ohm resistor on them, and no ground. 
+
+To my luck, there it was. Row 1, column 2 suddenly shined bright red. From there, it was easy
+to map the pins, and that also made me understand the matrix-datasheet. I made my own,
+to better have a overview over what was what. 

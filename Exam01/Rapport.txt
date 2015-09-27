@@ -17,3 +17,5 @@ to random pins. I also used a 220 ohm resistor on them, and no ground.
 To my luck, there it was. Row 1, column 2 suddenly shined bright red. From there, it was easy
 to map the pins, and that also made me understand the matrix-datasheet. I made my own,
 to better have a overview over what was what. 
+
+Led-Matrix package: https://github.com/marcmerlin/LED-Matrix/blob/master/examples/directmatrix8x8/directmatrix8x8.ino

@@ -18,4 +18,14 @@ To my luck, there it was. Row 1, column 2 suddenly shined bright red. From there
 to map the pins, and that also made me understand the matrix-datasheet. I made my own,
 to better have a overview over what was what. 
 
-Led-Matrix package: https://github.com/marcmerlin/LED-Matrix/blob/master/examples/directmatrix8x8/directmatrix8x8.ino
+Led-Control package: 
+https://github.com/wayoda/LedControl
+how to use: 
+	https://tronixstuff.files.wordpress.com/2010/07/matrixschematic2.jpg
+did not go for:
+	https://github.com/marcmerlin/LED-Matrix/blob/master/examples/directmatrix8x8/directmatrix8x8.ino (complex)
+	
+MAX7219:
+http://www.adafruit.com/datasheets/MAX7219.pdf
+http://tronixstuff.com/2013/10/11/tutorial-arduino-max7219-led-display-driver-ic/
+http://www.av8n.com/physics/anode-cathode.htm (cathode, anode)

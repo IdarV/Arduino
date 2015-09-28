@@ -9,7 +9,7 @@
  pin 10 is connected to LOAD 
  We have only a single MAX72XX.
  */
-LedControl lc = LedControl(2, 4, 3, 1);
+LedControl lc = LedControl(12, 11, 10, 1);
 
 /* we always wait a bit between updates of the display */
 unsigned long delaytime=100;
@@ -17,7 +17,7 @@ unsigned long delaytime=100;
 void setup() {
   // the zero refers to the MAX7219 number, it is zero for 1 chip
   lc.shutdown(0, false); // turn off power saving, enables display
-  lc.setIntensity(0, 8); // sets brightness (0~15 possible values)
+  lc.setIntensity(0, 15); // sets brightness (0~15 possible values)
   lc.clearDisplay(0);// clear screen
 }
 
@@ -152,7 +152,8 @@ void single() {
 
 void loop() { 
   writeArduinoOnMatrix();
-  rows();
-  columns();
+//  rows();
+//  columns();
   single();
+  lc.clearDisplay(0);
 }

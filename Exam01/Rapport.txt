@@ -29,3 +29,6 @@ MAX7219:
 http://www.adafruit.com/datasheets/MAX7219.pdf
 http://tronixstuff.com/2013/10/11/tutorial-arduino-max7219-led-display-driver-ic/
 http://www.av8n.com/physics/anode-cathode.htm (cathode, anode)
+
+https://gsamaras.wordpress.com/code/dynamic-2d-array-in-c/
+http://www.fontriver.com/font/lightdot_8x8/

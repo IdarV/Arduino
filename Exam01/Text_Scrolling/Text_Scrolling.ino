@@ -80,6 +80,8 @@ const int delay_time = 50;
 const int TEXT_SIZE = 100;
 int index = 0;
 
+//void create_string(char *str);
+
 int text[TEXT_SIZE][8];
 // dynamic allocation
 int** ary = new int*[8];
@@ -91,8 +93,12 @@ void setup() {
   lc.setIntensity(0, 15); // sets brightness (0~15 possible values)
   lc.clearDisplay(0);// clear screen
   // init array
-  for(int i = 0; i < TEXT_SIZE; ++i)
+  for(int i = 0; i < TEXT_SIZE; ++i){
       ary[i] = new int[8];
+  }
+  Serial.begin(9600);
+//  create_string("AYY LMAO\0");
+  
 }
 
 
@@ -136,23 +142,51 @@ void scroll(){
   lc.clearDisplay(0);
 }
 
-void add(int nee[] ){
-  ary[index++] =nee;
+void add(int character[] ){
+  ary[index++] = character;
 }
 
+void add_if_found(char c){
+  switch(c){
+    case 'a':
+    case 'A':
+      add(a);
+      break;
+    case 'l':
+    case 'L':
+      add(l);
+      break;
+    case 'o':
+    case 'O':
+      add(o);
+      break;
+    default:
+      break;
+  }
+}
+
+void read_from_serial(){
+  int index = 0;
+  while(Serial.available() > 0){
+    add_if_found(Serial.read());
+  }
+}
+int i = 0;
+
 void loop() {
-  add(a);
-  add(y);
-  add(y);
-  add(l);
-  add(m);
-  add(a);
-  add(o);
-  
-  add(space);
-//  scroll(a);
-//  scroll(y);
-//  scroll(y);
+  if(Serial.available() > 0){
+    read_from_serial();
+  } else{
+    delay(1000);
+  }
+//  add(a);
+//  add(y);
+//  add(y);
+//  add(l);
+//  add(m);
+//  add(a);
+//  add(o);
+//  add(space);
   scroll();
   lc.clearDisplay(0);
 }

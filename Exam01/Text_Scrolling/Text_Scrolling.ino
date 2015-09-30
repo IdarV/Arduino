@@ -3,12 +3,14 @@
 
 LedControl lc = LedControl(12, 11, 10, 1);
 
-// DATA_IN = 12
-// CLK = 11
-// LOADCS = 10
-// NUMBER_OF_IC = 1
+// Delay between each update
+const int delay_time = 50;
+// Size of allocated string
+const int TEXT_SIZE = 100;
+int index = 0;
 
-int empty = B0000000;
+// dynamic allocation
+int** print_string = new int*[10];
 
 int a[] {
   B11111110,
@@ -180,7 +182,7 @@ int m[] {
   B00000000
 };
 
-int n[]{
+int n[] {
   B11111111,
   B11111111,
   B11111111,
@@ -363,60 +365,57 @@ int space[] = {
   B00000000
 };
 
-const int delay_time = 50;
-const int TEXT_SIZE = 100;
-int index = 0;
-
-//void create_string(char *str);
-
-//int text[TEXT_SIZE][8];
-// dynamic allocation
-int** ary = new int*[10];
-
-
 void setup() {
-  // the zero refers to the MAX7219 number, it is zero for 1 chip
-  lc.shutdown(0, false); // turn off power saving, enables display
-  lc.setIntensity(0, 15); // sets brightness (0~15 possible values)
-  lc.clearDisplay(0);// clear screen
-  // init array
-  for (int i = 0; i < TEXT_SIZE; ++i) {
-    ary[i] = new int[8];
-  }
-  Serial.begin(9600);
+  // Standard LC setup
+  lc.shutdown(0, false);
+  lc.setIntensity(0, 15);
+  lc.clearDisplay(0);
+
+  // Add 'hello' as default message
   add(space);
-  add(i);
-  add(f);
-  add(a);
+  add(h);
   add(e);
-  add(n);
+  add(l);
+  add(l);
+  add(o);
   add(space);
+
+  Serial.begin(9600);
 }
 
 void scroll() {
-  int  j, i_i;
-  Serial.println(index * 10);
-  for (i_i = 0; i_i < (index * 10) -10; i_i++) {
+  int i, j;
+
+  // For each singe row of the total rows of all the 
+  // characters in the current print_string 
+  // (each is 10 bytes long, _index_ is length of string)
+  for (i = 0; i < (index * 10) - 10; i++) {
+    // Seven times
     for (j = 7; j >= 0; j--) {
+      // Print row of characters
       int this_a = 0;
-      int this_b = i_i + j;
+      int this_b = i + j;
       while (this_b > 9) {
+        // If end of current char, start printing next
         this_b -= 10;
         this_a++;
       }
-      lc.setRow(0, j, ary[this_a][this_b]);
-
-    } delay(delay_time);
-
+      // Print current row to screen
+      lc.setRow(0, j, print_string[this_a][this_b]);
+    }
+    // Add some delay
+    delay(delay_time);
   }
 
   lc.clearDisplay(0);
 }
 
+// Adds a char to the string
 void add(int character[] ) {
-  ary[index++] = character;
+  print_string[index++] = character;
 }
 
+// Add a letter if it exists
 void add_if_found(char ch) {
   switch (ch) {
     case 'a':
@@ -531,25 +530,26 @@ void add_if_found(char ch) {
   }
 }
 
-void read_from_serial() {
-  index = 0;
-  add(space);
-  while (Serial.available() > 0) {
-    add_if_found(Serial.read());
+// Read from the serial
+void read_from_serial_if_new_input() {
+  if (Serial.available() > 0) {
+    // reset index and start adding numbes
+    index = 0;
+    add(space);
+    while (Serial.available() > 0) {
+      add_if_found(Serial.read());
+    }
+    add(space);
   }
-  add(space);
-
+  else {
+    delay(1000);
+  }
 }
 
 
 void loop() {
-  if (Serial.available() > 0) {
-    read_from_serial();
-  } else {
-    delay(1000);
-  }
+  // Read from serial if it has new input
+  read_from_serial_if_new_input();
+  // scroll through text
   scroll();
 }
-
-
-

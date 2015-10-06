@@ -1,17 +1,21 @@
 # Rapport for Exam01
 ##### By Idar Vassdal (tjoida)
  
-==================
-
-Text-scrolling uses the package Led-Control that are referenced below. 
-It's a simple program that scrolls text on the 8x8 matrix of what you write to the Serial console (a-Z).
-I looked into another Led driver, but I decided to go for LedControl because it looked much simpler, and had better readability.
+## The program
+This is a text-scrolling program that uses the package LedControl, that are referenced below, to control a 8x8 matrix. 
+The default text is "hello", but it will display input to the Serial console (characters a-z).
+I looked into another Led driver, also referenced below, but I decided to go for LedControl because it looked much simpler, and had better readability.
 
 ## Video
 
 Demo of me using the device with input into the Serial console
 
 https://www.youtube.com/watch?v=lXrRxu93aIw&feature=youtu.be
+
+## Files included
+- *Text_scrolling* is the Arduino program. Requires you to have LedControl in your local Arduino Library.
+- *Sketch_pdf* is a overview of how to set up the arduino with the hardware, made with Fritzing
+- *smm_1588asrg_OVERVIEW.png* is my cheat-sheet, I included it because why not?
 
 ## LED PACKAGE
 - LedControl package 	https://github.com/wayoda/LedControl

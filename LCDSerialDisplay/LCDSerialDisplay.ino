@@ -6,6 +6,7 @@
 #include <LiquidCrystal_I2C.h>
 
 #define BACKLIGHT_PIN     13
+#define light_pin A2
 
 LiquidCrystal_I2C lcd(0x3F, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  // set the LCD address to 0x38
 
@@ -15,6 +16,7 @@ int forward;
 void setup()
 {
   pinMode ( BACKLIGHT_PIN, OUTPUT );
+  pinMode(light_pin, INPUT);
   lcd.begin (16,2); 
   digitalWrite ( BACKLIGHT_PIN, HIGH );
   spaces = 0;
@@ -28,27 +30,25 @@ void loop()
 //  if (Serial.available()) 
 //  {
     // wait a bit for the entire message to arrive
+    
     delay(200);
+    int light = analogRead(light_pin);
+    Serial.println(light);
     lcd.clear();
     int i = 0;
-    for(;i < spaces; i++){
-      lcd.write(" ");
+    if(light > 255){
+      light = 255;
     }
-    lcd.write("?");
+    if(light < 0){
+      light = 0;
+    }
+//    lcd.setCursor(0,1);
+//    i = 0;
+//    for(;i < light/100 * 2; i++){
+//      lcd.write("M");
+//    }
     // clear the screen
    // lcd.clear();
-
-    if(spaces == 14){
-      forward = 0;
-    }
-    if(spaces == 0){
-      forward = 1;
-    }
-    if(forward){
-      spaces++;
-    } else{
-      spaces--;
-    }
     // read all the available characters
 //    while (Serial.available() > 0) 
 //    {

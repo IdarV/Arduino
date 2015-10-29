@@ -1,15 +1,15 @@
 #include "ClockMaster.h"
+#include "Alarm.h"
 #include <TFT.h>  // Arduino LCD library
 
 #define cs   10
 #define dc   9
 #define rst  8
 
+RTC_DS1307 rtc;
+
 // Init screen
 TFT tft = TFT(cs, dc, rst);
-
-// Declare Real Time Clock
-RTC_DS1307 rtc;
 
 char daysOfTheWeek[7][12] =
 {"Sunday", "Monday", "Tuesday", "Wednesday",
@@ -20,13 +20,6 @@ char monthsOfTheYear[12][12] =
 
 // SCREEN SETTINGS
 int defaultBackground = 0x0000;
-
-// ALARM SETTINGS
-DateTime alarmMillis;
-int alarmTonePin = 2;
-int alarmTone;
-int alarmButtonPin = 4;
-int alarmButtonPressed = 0;
 
 // YEAR SETTINGS
 int yearSize = 2;
@@ -50,7 +43,7 @@ int dayLength = 24;
 int weekdayColor = 0xFF00FF;
 int weekdaySize = 2;
 int weekdayXPos = 0; // One space after month
-int weekdayYPos = 110;
+int weekdayYPos = 112;
 int weekdayLength = 24;
 
 // HOUR SETTINGS
@@ -160,16 +153,7 @@ void initScreen(){
   writeYear(time_now);
 }
 
-void initAlarm(){
-  alarmTone = 1480;
-  alarmMillis = DateTime(getTime() + TimeSpan(0, 0, 0, 10));
-
-  pinMode(alarmTonePin, OUTPUT);
-  pinMode(alarmButtonPin, OUTPUT);
-}
-
-void clockSetup() {
-  Serial.begin(9600);
+void initRTC(){
   //Wire.pins(2, 14); // SDA an SCL (comment on this, source is RTCLib::ds1307
   // Start RTC, print error if it's not found
   if (!rtc.begin()) {
@@ -181,26 +165,27 @@ void clockSetup() {
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
     Serial.println("RTC time set to compile-date");
   }
+}
 
+void clockSetup(Alarm *alarm) {
+  Serial.begin(9600);
+  initRTC();
   tft.begin();
-
   initScreen();
-  initAlarm();
-
+  alarm->initAlarm(getTime());
 }
 
-bool alarmButtonIsPressed(){
-  return HIGH == digitalRead(alarmButtonPin);
-}
-
-void waitForNextSecond(DateTime time_now){
+void waitForNextSecond(DateTime time_now, Alarm *alarm){
+  Serial.print("waitForNextSecond");
   // Wait for new second (I like this better than delay(1000), because it takes loop execution time into account)
   while(getTime().second() == time_now.second()){
-    if(alarmMillis.unixtime() < time_now.unixtime() && alarmButtonPressed == 0){
-      if(alarmButtonIsPressed()){
-        alarmButtonPressed = 1;
+    Serial.print("alarm.getAlarm().unixtime(): ");
+    Serial.println(alarm->getAlarm().unixtime());
+    if(alarm->getAlarm().unixtime() < time_now.unixtime() && !alarm->alarmState()){
+      if(alarm->alarmButtonIsPressed()){
+        alarm->setAlarmButtonState(1);
       }
-      tone(2, alarmTone, 10);
+      alarm->ring();
     }
     delay(10);
   }

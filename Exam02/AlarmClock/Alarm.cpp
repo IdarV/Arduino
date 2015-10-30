@@ -38,7 +38,4 @@ void Alarm::initAlarm(DateTime time_now){
   _alarmButtonPressed = 0;
   _alarmTone = 1480;
   _alarmMillis = DateTime(time_now + TimeSpan(0, 0, 0, 10));
-
-  pinMode(_alarmTonePin, OUTPUT);
-  pinMode(_alarmButtonPin, OUTPUT);
 }

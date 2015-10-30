@@ -44,7 +44,7 @@ int weekdayColor = 0xFF00FF;
 int weekdaySize = 2;
 int weekdayXPos = 0; // One space after month
 int weekdayYPos = 112;
-int weekdayLength = 24;
+int weekdayLength = 80;
 
 // HOUR SETTINGS
 int hourLeftOffset = 11;
@@ -176,11 +176,8 @@ void clockSetup(Alarm *alarm) {
 }
 
 void waitForNextSecond(DateTime time_now, Alarm *alarm){
-  Serial.print("waitForNextSecond");
   // Wait for new second (I like this better than delay(1000), because it takes loop execution time into account)
   while(getTime().second() == time_now.second()){
-    Serial.print("alarm.getAlarm().unixtime(): ");
-    Serial.println(alarm->getAlarm().unixtime());
     if(alarm->getAlarm().unixtime() < time_now.unixtime() && !alarm->alarmState()){
       if(alarm->alarmButtonIsPressed()){
         alarm->setAlarmButtonState(1);
@@ -189,6 +186,28 @@ void waitForNextSecond(DateTime time_now, Alarm *alarm){
     }
     delay(10);
   }
+}
+
+void resetDisplayTime(DateTime newTime){
+  clearTextLine(secondXPos, secondYPos, secondSize, secondLength);
+  writeSecond(newTime);
+
+  clearTextLine(minuteXPos, minuteYPos, minuteSize, minuteLength);
+  writeMinute(newTime);
+
+  clearTextLine(hourXPos, hourYPos, hourSize, hourLength);
+  writeHour(newTime);
+
+  clearTextLine(dayXPos, dayYPos, daySize, dayLength);
+  clearTextLine(weekdayXPos, weekdayYPos, weekdaySize, weekdayLength);
+  writeDay(newTime);
+  writeWeekDay(newTime);
+
+  clearTextLine(monthXPos, monthYPos, monthSize, monthLength);
+  writeMonth(newTime);
+
+  clearTextLine(yearXPos, yearYPos, yearSize, yearLength);
+  writeYear(newTime);
 }
 
 void updateDisplayTime(DateTime time_now){

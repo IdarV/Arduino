@@ -15,7 +15,6 @@ int xPosition = 0;
 int yPosition = 0;
 int buttonState = 0;
 
-
 void setup(){
   clockSetup(&alarm);
 
@@ -54,6 +53,7 @@ void setNewAlarm(){
     // if button is pressed, exit alarm setting
     if(buttonState == 0){
       exitButtonPressed = 1;
+      alarm.setAlarmButtonState(0);
       alarm.setAlarm(displayTime);
       resetDisplayTime(getTime());
     } else{
@@ -101,8 +101,6 @@ void loop() {
   xPosition = analogRead(xPin);
   yPosition = analogRead(yPin);
   buttonState = digitalRead(buttonPin);
-
-
 
   if(buttonState == 0){
     setNewAlarm();

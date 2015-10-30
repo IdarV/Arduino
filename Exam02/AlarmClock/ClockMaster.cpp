@@ -31,7 +31,7 @@ int yearLength = 48;
 int monthSize = 2;
 int monthXPos = 0;
 int monthYPos = 0;
-int monthLength = 86;
+int monthLength = 96;
 
 // DAY OF MONTH SETTINGS
 int daySize = 2;
@@ -44,7 +44,7 @@ int weekdayColor = 0xFF00FF;
 int weekdaySize = 2;
 int weekdayXPos = 0; // One space after month
 int weekdayYPos = 112;
-int weekdayLength = 80;
+int weekdayLength = 110;
 
 // HOUR SETTINGS
 int hourLeftOffset = 11;
@@ -77,6 +77,8 @@ void writeMonth(DateTime time_now) {
   tft.setTextSize(monthSize);
   tft.setCursor(monthXPos, monthYPos);
 
+  monthLength = monthsOfTheYear[time_now.month() - 1].size() * 8;
+
   tft.print(monthsOfTheYear[time_now.month() - 1]);
 }
 
@@ -89,6 +91,7 @@ void writeYear(DateTime time_now) {
 }
 
 void writeDay(DateTime time_now) {
+  dayXPos = monthLength + 4; // One space after month
   tft.stroke(255, 255, 255);
   tft.setTextSize(daySize);
   tft.setCursor(dayXPos, dayYPos);
@@ -112,6 +115,10 @@ void writeHour(DateTime time_now) {
   tft.stroke(255, 255, 255);
   tft.setTextSize(hourSize);
   tft.setCursor(hourXPos, hourYPos);
+
+  if (time_now.hour() < 10) {
+    tft.print("0");
+  }
 
   tft.print(time_now.hour());
 }

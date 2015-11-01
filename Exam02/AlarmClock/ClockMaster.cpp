@@ -20,6 +20,7 @@ char monthsOfTheYear[12][12] =
 
 // SCREEN SETTINGS
 int defaultBackground = 0x0000;
+int lastAlarmXPos = -1;
 
 // YEAR SETTINGS
 int yearSize = 2;
@@ -77,7 +78,7 @@ void writeMonth(DateTime time_now) {
   tft.setTextSize(monthSize);
   tft.setCursor(monthXPos, monthYPos);
 
-  monthLength = monthsOfTheYear[time_now.month() - 1].size() * 8;
+  //monthLength = monthsOfTheYear[time_now.month() - 1].size * 8;
 
   tft.print(monthsOfTheYear[time_now.month() - 1]);
 }
@@ -167,6 +168,7 @@ void initRTC(){
     Serial.println("Couldn't find RTC");
     while (1);
   }
+
   if (!rtc.isrunning()) {
     // following line sets the RTC to the date & time this sketch was compiled
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
@@ -185,17 +187,22 @@ void clockSetup(Alarm *alarm) {
 void waitForNextSecond(DateTime time_now, Alarm *alarm){
   // Wait for new second (I like this better than delay(1000), because it takes loop execution time into account)
   while(getTime().second() == time_now.second()){
-    if(alarm->getAlarm().unixtime() < time_now.unixtime() && !alarm->alarmState()){
+    // If time is past alarm time, and the alarm state is still active
+    if(alarm->getAlarm().unixtime() <= time_now.unixtime() && !alarm->alarmState()){
+      // If alarm-button is turend off, turn alarm off
       if(alarm->alarmButtonIsPressed()){
         alarm->setAlarmButtonState(1);
       }
+      // Sound the canons
       alarm->ring();
     }
     delay(10);
   }
 }
 
-void resetDisplayTime(DateTime newTime){
+// secondy: 50
+void resetDisplayTime(DateTime newTime, int currentXPos){
+
   clearTextLine(secondXPos, secondYPos, secondSize, secondLength);
   writeSecond(newTime);
 
@@ -215,6 +222,19 @@ void resetDisplayTime(DateTime newTime){
 
   clearTextLine(yearXPos, yearYPos, yearSize, yearLength);
   writeYear(newTime);
+
+  // draw current x-position-indicator
+  if(lastAlarmXPos != currentXPos){
+    // Center x-position-indicator under current number being changed
+    clearTextLine(0, 85, 2, 160);
+    if(currentXPos != -1){  
+      int calculatedXPos = 45 * currentXPos + 30;
+      tft.setCursor(calculatedXPos, 85);
+      tft.print("-");
+    }
+  }
+
+  lastAlarmXPos = currentXPos;
 }
 
 void updateDisplayTime(DateTime time_now){

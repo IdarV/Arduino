@@ -23,9 +23,6 @@ void setup(){
 
   //activate pull-up resistor on the push-button pin
   pinMode(buttonPin, INPUT_PULLUP);
-  // For versions prior to Arduino 1.0.1
-  // pinMode(buttonPin, INPUT);
-  // digitalWrite(buttonPin, HIGH);
 }
 
 void setNewAlarm(){
@@ -39,7 +36,7 @@ void setNewAlarm(){
   DateTime time_now = getTime();
   DateTime displayTime;
   int timeArray[3] = {0,0,0};
-
+  bool updateGUI = true;
   int currentIndex = 0;
 
   while(exitButtonPressed == 0){
@@ -47,51 +44,39 @@ void setNewAlarm(){
     yPosition = analogRead(yPin);
     buttonState = digitalRead(buttonPin);
 
-    int lastX = xPosition;
-    int lastY = yPosition;
-
     // if button is pressed, exit alarm setting
     if(buttonState == 0){
       exitButtonPressed = 1;
       alarm.setAlarmButtonState(0);
       alarm.setAlarm(displayTime);
-      resetDisplayTime(getTime());
+      resetDisplayTime(getTime(), -1);
     } else{
-      if(xPosition == 0){
-        // If move right, check if can move right
+      if(xPosition < 10){
+        // If move right, check if can move right and do so if we can
         if(currentIndex < 2){
           currentIndex++;
+          updateGUI = true;
         }
-      } else if(xPosition == 1021){
-        // If move left, check if can move left
+      } else if(xPosition > 1000){
+        // If move left, check if can move left and do so if we can
         if(currentIndex > 0){
           currentIndex--;
+          updateGUI = true;
         }
       } else if(yPosition == 0){
         timeArray[currentIndex] = timeArray[currentIndex] + 1;
+        updateGUI = true;
       } else if(yPosition == 1021){
         timeArray[currentIndex] = timeArray[currentIndex] - 1;
+        updateGUI = true;
       }
-
-
-      Serial.print("currentIndex: ");
-      Serial.print(currentIndex);
-      Serial.print(", array: ");
-      Serial.print(timeArray[0]);
-      Serial.print(", ");
-      Serial.print(timeArray[1]);
-      Serial.print(", ");
-      Serial.print(timeArray[2]);
-      Serial.print(", X: ");
-      Serial.print(xPosition);
-      Serial.print(" | Y: ");
-      Serial.print(yPosition);
-      Serial.print(" | Button: ");
-      Serial.println(buttonState);
 
       displayTime = time_now + TimeSpan(0, timeArray[0], timeArray[1], timeArray[2]);//timeDifference;
 
-      resetDisplayTime(displayTime);
+      if(updateGUI){
+        resetDisplayTime(displayTime, currentIndex);
+        updateGUI = false;
+      }
     }
   }
 }

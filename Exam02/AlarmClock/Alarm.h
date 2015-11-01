@@ -15,6 +15,10 @@ public:
   bool alarmButtonIsPressed();
 
 private:
+  int xPosition = 0;
+  int yPosition = 0;
+  int buttonState = 0;
+  int buttonPin = 7;
   int _alarmTonePin;
   int _alarmTone;
   int _alarmButtonPin;

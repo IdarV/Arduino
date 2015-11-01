@@ -21,6 +21,9 @@ Built-in Arduino Libraries. TFT is for communicating with TFT-LED-screens, and i
 http://42bots.com/tutorials/arduino-joystick-module-example/
 
 TODO:
+- Snooze button
+- Inducate which time-module (hh/mm/ss) is being changed when setting alarm
+- Show alarm icon on upcoming alarm
 - Fritzing
 - Complete the README
 - Video

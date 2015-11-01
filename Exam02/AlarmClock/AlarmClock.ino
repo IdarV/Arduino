@@ -6,6 +6,7 @@
 #include <SPI.h>
 
 Alarm alarm;
+ClockMaster cm;
 
 // PS2
 int xPin = A1;
@@ -16,7 +17,7 @@ int yPosition = 0;
 int buttonState = 0;
 
 void setup(){
-  clockSetup(&alarm);
+  cm.clockSetup(&alarm);
 
   pinMode(xPin, INPUT);
   pinMode(yPin, INPUT);
@@ -31,9 +32,8 @@ void setNewAlarm(){
     buttonState = digitalRead(buttonPin);
   }
   delay(300);
-  Serial.println("setNewAlarm()");
   int exitButtonPressed = 0;
-  DateTime time_now = getTime();
+  DateTime time_now = cm.getTime();
   DateTime displayTime;
   int timeArray[3] = {0,0,0};
   bool updateGUI = true;
@@ -49,7 +49,7 @@ void setNewAlarm(){
       exitButtonPressed = 1;
       alarm.setAlarmButtonState(0);
       alarm.setAlarm(displayTime);
-      resetDisplayTime(getTime(), -1);
+      cm.resetDisplayTime(cm.getTime(), -1);
     } else{
       if(xPosition < 10){
         // If move right, check if can move right and do so if we can
@@ -74,7 +74,7 @@ void setNewAlarm(){
       displayTime = time_now + TimeSpan(0, timeArray[0], timeArray[1], timeArray[2]);//timeDifference;
 
       if(updateGUI){
-        resetDisplayTime(displayTime, currentIndex);
+        cm.resetDisplayTime(displayTime, currentIndex);
         updateGUI = false;
       }
     }
@@ -93,9 +93,11 @@ void loop() {
 
   delay(100); // add some delay between reads
   // Get time
-  DateTime time_now = getTime();
+  DateTime time_now = cm.getTime();
   // Update display
-  updateDisplayTime(time_now);
+  cm.updateDisplayTime(time_now);
   // Wait for next second from clock;
-  waitForNextSecond(time_now, &alarm);
+  cm.waitForNextSecond(time_now, &alarm);
+
+
 }

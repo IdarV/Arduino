@@ -67,13 +67,13 @@ int secondXPos = minuteXPos + minuteLength;
 int secondYPos = 50;
 int secondLength = 48;
 
-void clearTextLine(int textX, int textY, int textSize, int textLength) {
+void ClockMaster::clearTextLine(int textX, int textY, int textSize, int textLength) {
   for (int i = 0; i < (8 * textSize); i++) {
     tft.drawFastHLine(textX, textY + i, textLength, defaultBackground);
   }
 }
 
-void writeMonth(DateTime time_now) {
+void ClockMaster::writeMonth(DateTime time_now) {
   tft.stroke(255, 255, 255);
   tft.setTextSize(monthSize);
   tft.setCursor(monthXPos, monthYPos);
@@ -83,7 +83,7 @@ void writeMonth(DateTime time_now) {
   tft.print(monthsOfTheYear[time_now.month() - 1]);
 }
 
-void writeYear(DateTime time_now) {
+void ClockMaster::writeYear(DateTime time_now) {
   tft.stroke(255, 255, 255);
   tft.setTextSize(yearSize);
   tft.setCursor(yearYPos, yearXPos);
@@ -91,7 +91,7 @@ void writeYear(DateTime time_now) {
   tft.print(time_now.year());
 }
 
-void writeDay(DateTime time_now) {
+void ClockMaster::writeDay(DateTime time_now) {
   dayXPos = monthLength + 4; // One space after month
   tft.stroke(255, 255, 255);
   tft.setTextSize(daySize);
@@ -104,7 +104,7 @@ void writeDay(DateTime time_now) {
   tft.print(time_now.day());
 }
 
-void writeWeekDay(DateTime time_now){
+void ClockMaster::writeWeekDay(DateTime time_now){
   tft.stroke(weekdayColor);
   tft.setTextSize(weekdaySize);
   tft.setCursor(weekdayXPos, weekdayYPos);
@@ -112,7 +112,7 @@ void writeWeekDay(DateTime time_now){
   tft.print(daysOfTheWeek[time_now.dayOfTheWeek()]);
 }
 
-void writeHour(DateTime time_now) {
+void ClockMaster::writeHour(DateTime time_now) {
   tft.stroke(255, 255, 255);
   tft.setTextSize(hourSize);
   tft.setCursor(hourXPos, hourYPos);
@@ -124,7 +124,7 @@ void writeHour(DateTime time_now) {
   tft.print(time_now.hour());
 }
 
-void writeMinute(DateTime time_now) {
+void ClockMaster::writeMinute(DateTime time_now) {
   tft.stroke(minuteColor);
   tft.setTextSize(hourSize);
   tft.setCursor(minuteXPos, minuteYPos);
@@ -134,7 +134,7 @@ void writeMinute(DateTime time_now) {
   tft.print(time_now.minute());
 }
 
-void writeSecond(DateTime time_now) {
+void ClockMaster::writeSecond(DateTime time_now) {
   tft.stroke(255, 255, 255);
   tft.setTextSize(secondSize);
   tft.setCursor(secondXPos, secondYPos);
@@ -144,11 +144,11 @@ void writeSecond(DateTime time_now) {
   tft.print(time_now.second());
 }
 
-DateTime getTime(){
+DateTime ClockMaster::getTime(){
   return rtc.now() + TimeSpan(0, 0, 21, 16);//timeDifference;
 }
 
-void initScreen(){
+void ClockMaster::initScreen(){
   tft.background(0, 0, 0);
   DateTime time_now = getTime();
 
@@ -161,7 +161,7 @@ void initScreen(){
   writeYear(time_now);
 }
 
-void initRTC(){
+void ClockMaster::initRTC(){
   //Wire.pins(2, 14); // SDA an SCL (comment on this, source is RTCLib::ds1307
   // Start RTC, print error if it's not found
   if (!rtc.begin()) {
@@ -176,7 +176,7 @@ void initRTC(){
   }
 }
 
-void clockSetup(Alarm *alarm) {
+void ClockMaster::clockSetup(Alarm *alarm) {
   Serial.begin(9600);
   initRTC();
   tft.begin();
@@ -184,7 +184,7 @@ void clockSetup(Alarm *alarm) {
   alarm->initAlarm(getTime());
 }
 
-void waitForNextSecond(DateTime time_now, Alarm *alarm){
+void ClockMaster::waitForNextSecond(DateTime time_now, Alarm *alarm){
   // Wait for new second (I like this better than delay(1000), because it takes loop execution time into account)
   while(getTime().second() == time_now.second()){
     // If time is past alarm time, and the alarm state is still active
@@ -201,7 +201,7 @@ void waitForNextSecond(DateTime time_now, Alarm *alarm){
 }
 
 // secondy: 50
-void resetDisplayTime(DateTime newTime, int currentXPos){
+void ClockMaster::resetDisplayTime(DateTime newTime, int currentXPos){
 
   clearTextLine(secondXPos, secondYPos, secondSize, secondLength);
   writeSecond(newTime);
@@ -227,7 +227,7 @@ void resetDisplayTime(DateTime newTime, int currentXPos){
   if(lastAlarmXPos != currentXPos){
     // Center x-position-indicator under current number being changed
     clearTextLine(0, 85, 2, 160);
-    if(currentXPos != -1){  
+    if(currentXPos != -1){
       int calculatedXPos = 45 * currentXPos + 30;
       tft.setCursor(calculatedXPos, 85);
       tft.print("-");
@@ -237,7 +237,7 @@ void resetDisplayTime(DateTime newTime, int currentXPos){
   lastAlarmXPos = currentXPos;
 }
 
-void updateDisplayTime(DateTime time_now){
+void ClockMaster::updateDisplayTime(DateTime time_now){
   clearTextLine(secondXPos, secondYPos, secondSize, secondLength);
   writeSecond(time_now);
 

@@ -23,5 +23,7 @@ private:
   void writeHour(DateTime time_now);
   void writeMinute(DateTime time_now);
   void writeSecond(DateTime time_now);
+  void writeTemp();
+  void setAvgTemp(float temperatures[], int temperaturesSize);
 };
 #endif

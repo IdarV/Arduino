@@ -22,6 +22,14 @@ char monthsOfTheYear[12][12] =
 int defaultBackground = 0x0000;
 int lastAlarmXPos = -1;
 
+// TEMP SETTINGS
+int tempPin = A3;
+int tempSize = 2;
+int tempXPos = 0;
+int tempYPos = 15;
+int tempLength = 100;
+float lastAvgTemp = 0;
+
 // YEAR SETTINGS
 int yearSize = 2;
 int yearXPos = 114;
@@ -144,6 +152,14 @@ void ClockMaster::writeSecond(DateTime time_now) {
   tft.print(time_now.second());
 }
 
+void ClockMaster::writeTemp(){
+  tft.stroke(32, 177, 98);
+  tft.setTextSize(2);
+  tft.setCursor(tempXPos, tempYPos);
+  tft.print(lastAvgTemp);
+  tft.print("C");
+}
+
 DateTime ClockMaster::getTime(){
   return rtc.now() + TimeSpan(0, 0, 21, 16);//timeDifference;
 }
@@ -186,7 +202,13 @@ void ClockMaster::clockSetup(Alarm *alarm) {
 
 void ClockMaster::waitForNextSecond(DateTime time_now, Alarm *alarm){
   // Wait for new second (I like this better than delay(1000), because it takes loop execution time into account)
+  float temps[100];
+  int tempsIndex = 0;
   while(getTime().second() == time_now.second()){
+    // Get temp
+    int tempSensorValue = analogRead(tempPin);
+    float temperatureC = ( 4.9 * tempSensorValue * 100.0) / 1024.0;
+    temps[tempsIndex++] = temperatureC;
     // If time is past alarm time, and the alarm state is still active
     if(alarm->getAlarm().unixtime() <= time_now.unixtime() && !alarm->alarmState()){
       // If alarm-button is turend off, turn alarm off
@@ -198,6 +220,16 @@ void ClockMaster::waitForNextSecond(DateTime time_now, Alarm *alarm){
     }
     delay(10);
   }
+  setAvgTemp(temps, tempsIndex - 1);
+}
+
+void ClockMaster::setAvgTemp(float temperatures[], int temperaturesSize){
+  float finalTemp = 0;
+  for(int i = 0; i < temperaturesSize; i++){
+    finalTemp += (float) (1.0/temperaturesSize) * temperatures[i];
+    Serial.println(1/temperaturesSize);
+  }
+  lastAvgTemp = finalTemp;
 }
 
 // secondy: 50
@@ -223,6 +255,9 @@ void ClockMaster::resetDisplayTime(DateTime newTime, int currentXPos){
   clearTextLine(yearXPos, yearYPos, yearSize, yearLength);
   writeYear(newTime);
 
+  clearTextLine(tempXPos, tempYPos, tempSize, tempLength);
+  writeTemp();
+
   // draw current x-position-indicator
   if(lastAlarmXPos != currentXPos){
     // Center x-position-indicator under current number being changed
@@ -240,6 +275,9 @@ void ClockMaster::resetDisplayTime(DateTime newTime, int currentXPos){
 void ClockMaster::updateDisplayTime(DateTime time_now){
   clearTextLine(secondXPos, secondYPos, secondSize, secondLength);
   writeSecond(time_now);
+
+  clearTextLine(tempXPos, tempYPos, tempSize, tempLength);
+  writeTemp();
 
   // If second is 0, change the minute aswell
   if (time_now.second() == 0) {

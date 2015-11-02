@@ -4,6 +4,7 @@
 #include "RTClib.h"
 #include <TFT.h>  // Arduino LCD library
 #include <SPI.h>
+#include <DHT.h>
 
 Alarm alarm;
 ClockMaster cm;

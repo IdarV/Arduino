@@ -1,10 +1,14 @@
 #include "ClockMaster.h"
 #include "Alarm.h"
 #include <TFT.h>  // Arduino LCD library
+#include <DHT.h>
 
 #define cs   10
 #define dc   9
 #define rst  8
+
+#define DHTPIN 5
+#define DHTTYPE DHT11   // DHT 22  (AM2302)
 
 RTC_DS1307 rtc;
 
@@ -22,13 +26,20 @@ char monthsOfTheYear[12][12] =
 int defaultBackground = 0x0000;
 int lastAlarmXPos = -1;
 
-// TEMP SETTINGS
-int tempPin = A3;
+// // TEMP SETTINGS
+// int tempPin = A3;
+
+
+// DHT SETTINGS
+// int dhtPin = 12;
+DHT dht(DHTPIN, DHTTYPE);
 int tempSize = 2;
 int tempXPos = 0;
-int tempYPos = 15;
-int tempLength = 100;
-float lastAvgTemp = 0;
+int tempYPos = 20;
+int tempLength = 160;
+int lastTemp = 0;
+int lastHumidity = 0;
+int lastTempF = 0;
 
 // YEAR SETTINGS
 int yearSize = 2;
@@ -156,8 +167,23 @@ void ClockMaster::writeTemp(){
   tft.stroke(32, 177, 98);
   tft.setTextSize(2);
   tft.setCursor(tempXPos, tempYPos);
-  tft.print(lastAvgTemp);
-  tft.print("C");
+  if(-10 < lastTemp && 10 > lastTemp ){
+    tft.print("0");
+  }
+  tft.print(lastTemp);
+  tft.print("C ");
+  if(-10 < lastTempF && 10 > lastTempF ){
+    tft.print("0");
+  }
+  tft.print(lastTempF);
+  tft.print("F ");
+  if(-10 < lastHumidity && 10 > lastHumidity ){
+    tft.print("0");
+  }
+  tft.print(lastHumidity);
+  tft.print("h");
+
+
 }
 
 DateTime ClockMaster::getTime(){
@@ -195,6 +221,7 @@ void ClockMaster::initRTC(){
 void ClockMaster::clockSetup(Alarm *alarm) {
   Serial.begin(9600);
   initRTC();
+  dht.begin();
   tft.begin();
   initScreen();
   alarm->initAlarm(getTime());
@@ -202,13 +229,15 @@ void ClockMaster::clockSetup(Alarm *alarm) {
 
 void ClockMaster::waitForNextSecond(DateTime time_now, Alarm *alarm){
   // Wait for new second (I like this better than delay(1000), because it takes loop execution time into account)
-  float temps[100];
-  int tempsIndex = 0;
+  // float temps[100];
+  // int tempsIndex = 0;
+  setAvgTemp();
   while(getTime().second() == time_now.second()){
     // Get temp
-    int tempSensorValue = analogRead(tempPin);
-    float temperatureC = ( 4.9 * tempSensorValue * 100.0) / 1024.0;
-    temps[tempsIndex++] = temperatureC;
+    // int tempSensorValue = analogRead(tempPin);
+    // float temperatureC = ( 4.9 * tempSensorValue * 100.0) / 1024.0;
+    // float temperatureC = dht.readTemperature();
+    // temps[tempsIndex++] = temperatureC;
     // If time is past alarm time, and the alarm state is still active
     if(alarm->getAlarm().unixtime() <= time_now.unixtime() && !alarm->alarmState()){
       // If alarm-button is turend off, turn alarm off
@@ -218,18 +247,23 @@ void ClockMaster::waitForNextSecond(DateTime time_now, Alarm *alarm){
       // Sound the canons
       alarm->ring();
     }
+
     delay(10);
   }
-  setAvgTemp(temps, tempsIndex - 1);
+
+  //if(time_now.second() % 2 == 0){
+
+  //}
+
 }
 
-void ClockMaster::setAvgTemp(float temperatures[], int temperaturesSize){
-  float finalTemp = 0;
-  for(int i = 0; i < temperaturesSize; i++){
-    finalTemp += (float) (1.0/temperaturesSize) * temperatures[i];
-    Serial.println(1/temperaturesSize);
-  }
-  lastAvgTemp = finalTemp;
+void ClockMaster::setAvgTemp(){
+  float hum = dht.readHumidity();
+  float temp = dht.readTemperature();
+  float tempF = dht.readTemperature(true);
+  lastTemp = int(temp + 0.5);
+  lastHumidity = int(hum + 0.5);
+  lastTempF = int(tempF + 0.5);
 }
 
 // secondy: 50

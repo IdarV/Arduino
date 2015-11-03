@@ -39,6 +39,7 @@ DHT library for Arduino. I chose this because I had used it in lectures before, 
 
 ## Sources
 http://42bots.com/tutorials/arduino-joystick-module-example/
+The RTCLib example ```RTCLib::ds1307```
 
 ## Final words
 Please use this sentence as a quote instead of something from Fredrick's note.

@@ -24,6 +24,6 @@ private:
   void writeMinute(DateTime time_now);
   void writeSecond(DateTime time_now);
   void writeTemp();
-  void setAvgTemp();
+  void setCurrentDHT();
 };
 #endif

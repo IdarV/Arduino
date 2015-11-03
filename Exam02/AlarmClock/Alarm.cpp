@@ -1,7 +1,8 @@
 #include <Wire.h>
 #include "RTClib.h"
 #include "Alarm.h"
-// Declare Real Time Clock
+
+// Alarm 
 
 void Alarm::setAlarm(DateTime date){
   _alarmMillis = date;

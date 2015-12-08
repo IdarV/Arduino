@@ -1,18 +1,18 @@
 /*
 
- TFT EtchASketch
+TFT EtchASketch
 
- This example for the Arduino screen draws a white point
- on the GLCD based on the values of 2 potentiometers.
- To clear the screen, press a button attached to pin 2.
+This example for the Arduino screen draws a white point
+on the GLCD based on the values of 2 potentiometers.
+To clear the screen, press a button attached to pin 2.
 
- This example code is in the public domain.
+This example code is in the public domain.
 
- Created 15 April 2013 by Scott Fitzgerald
+Created 15 April 2013 by Scott Fitzgerald
 
- http://www.arduino.cc/en/Tutorial/TFTEtchASketch
+http://www.arduino.cc/en/Tutorial/TFTEtchASketch
 
- */
+*/
 
 #include <TFT.h>  // Arduino LCD library
 #include <SPI.h>
@@ -22,17 +22,21 @@
 #define dc   9
 #define rst  8
 
-// pin definition for the Leonardo
-// #define cs   7
-// #define dc   0
-// #define rst  1
+enum direction {
+  UP,
+  DOWN,
+  LEFT,
+  RIGHT
+};
 
 TFT TFTscreen = TFT(cs, dc, rst);
 
 // initial position of the cursor
 int xPos = TFTscreen.width() / 2;
 int yPos = TFTscreen.height() / 2;
-int direction;
+
+// initial direction
+direction currentDirection = RIGHT;
 
 // pin the erase switch is connected to
 int erasePin = 2;
@@ -45,6 +49,8 @@ void setup() {
   TFTscreen.begin();
   // make the background black
   TFTscreen.background(0, 0, 0);
+  // set starting direction
+
 }
 
 void loop()
@@ -54,37 +60,30 @@ void loop()
   int xValue = analogRead(A0);
   int yValue = analogRead(A1);
 
-  Serial.print("xValue: ");
-  Serial.println(xValue);
-  Serial.print("yValue: ");
-  Serial.println(yValue);
 
+  if(yValue > 980 && currentDirection != DOWN){
+    currentDirection = UP;
+  } else if(yValue < 44 && currentDirection != UP){
+    currentDirection = DOWN;
+  } else if(xValue > 980 && currentDirection != RIGHT){
+    currentDirection = LEFT;
+  } else if(xValue < 44 && currentDirection != LEFT){
+    currentDirection = RIGHT;
+  }
 
-  // map the values and update the position
-  // Serial.print("xPos before: ");
-  // Serial.println(xPos);
-  // Serial.print("yPos before: ");
-  // Serial.println(yPos);
-  // xPos = xPos + (map(xValue, 0, 1023, 1, -1));
-  // yPos = yPos + (map(yValue, 0, 1023, -1, 1));
+  if(currentDirection == UP){
+    yPos += 1;
+  }
+  else if(currentDirection == DOWN){
+    yPos -= 1;
+  }
 
-   if(yValue > 980){
-     yPos -= 1;
-   } else if(yValue < 44){
-     yPos += 1;
-   }
-
-   else if(xValue > 980){
-     xPos += 1;
-   } else if(xValue < 44){
-     xPos -= 1;
-   }
-
-  // Serial.print("xPos after: ");
-  // Serial.println(xPos);
-  // Serial.print("yPos after: ");
-  // Serial.println(yPos);
-  // Serial.println();
+  else if(currentDirection == LEFT){
+    xPos -= 1;
+  }
+  else if(currentDirection == RIGHT){
+    xPos += 1;
+  }
 
   // don't let the point go past the screen edges
   if (xPos > 159) {
@@ -101,6 +100,8 @@ void loop()
   if (yPos < 0) {
     (yPos = 0);
   }
+
+  Serial.println(currentDirection);
 
   // draw the point
   TFTscreen.stroke(255, 255, 255);

@@ -7,23 +7,18 @@ http://www.arduino.cc/en/Tutorial/TFTEtchASketch
 #include <TFT.h>  // Arduino LCD library
 #include <SPI.h>
 
+#include "direction.h"
+
 // pin definition for the Uno
 #define cs   10
 #define dc   9
 #define rst  8
 
-enum direction {
-  UP,
-  DOWN,
-  LEFT,
-  RIGHT
-};
-
 TFT TFTscreen = TFT(cs, dc, rst);
 
 // initial position of the cursor
-int xPos = TFTscreen.width() / 2;
-int yPos = TFTscreen.height() / 2;
+int xPos = 28;
+int yPos = 28;
 
 // initial direction
 direction currentDirection;
@@ -85,22 +80,20 @@ void loop()
   }
 
   // don't let the point go past the screen edges
-  if (xPos > 159) {
-    (xPos = 159);
+  if (xPos > 157) {
+    (xPos = 157);
   }
 
-  if (xPos < 0) {
-    (xPos = 0);
+  if (xPos < 1) {
+    (xPos = 1);
   }
-  if (yPos > 127) {
-    (yPos = 127);
-  }
-
-  if (yPos < 0) {
-    (yPos = 0);
+  if (yPos > 124) {
+    (yPos = 124);
   }
 
-  Serial.println(currentDirection);
+  if (yPos < 1) {
+    (yPos = 1);
+  }
 
   // draw the point
   TFTscreen.stroke(rgbColour[0], rgbColour[1], rgbColour[2]);
@@ -119,6 +112,7 @@ void loop()
   }
 
   // change color
+  // https://gist.github.com/jamesotron/766994
   if(rgbColour[incColour] == 255){
     int temp = incColour;
     incColour = (decColour == 2) ? 0 : decColour + 1;

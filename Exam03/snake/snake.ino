@@ -32,6 +32,7 @@ TFT TFTscreen = TFT(cs, dc, rst);
 // initial position of the cursor
 int xPos = TFTscreen.width() / 2;
 int yPos = TFTscreen.height() / 2;
+int direction;
 
 // pin the erase switch is connected to
 int erasePin = 2;
@@ -48,7 +49,7 @@ void setup() {
 
 void loop()
 {
-  delay(1000);
+  delay(100);
   // read the potentiometers on A0 and A1
   int xValue = analogRead(A0);
   int yValue = analogRead(A1);
@@ -60,8 +61,30 @@ void loop()
 
 
   // map the values and update the position
-  xPos = xPos + (map(xValue, 0, 1023, 2, -2));
-  yPos = yPos + (map(yValue, 0, 1023, -2, 2));
+  // Serial.print("xPos before: ");
+  // Serial.println(xPos);
+  // Serial.print("yPos before: ");
+  // Serial.println(yPos);
+  // xPos = xPos + (map(xValue, 0, 1023, 1, -1));
+  // yPos = yPos + (map(yValue, 0, 1023, -1, 1));
+
+   if(yValue > 980){
+     yPos -= 1;
+   } else if(yValue < 44){
+     yPos += 1;
+   }
+
+   else if(xValue > 980){
+     xPos += 1;
+   } else if(xValue < 44){
+     xPos -= 1;
+   }
+
+  // Serial.print("xPos after: ");
+  // Serial.println(xPos);
+  // Serial.print("yPos after: ");
+  // Serial.println(yPos);
+  // Serial.println();
 
   // don't let the point go past the screen edges
   if (xPos > 159) {
@@ -81,6 +104,7 @@ void loop()
 
   // draw the point
   TFTscreen.stroke(255, 255, 255);
+  // TFTscreen.point(xPos, yPos);
   TFTscreen.point(xPos, yPos);
 
   // read the value of the pin, and erase the screen if pressed

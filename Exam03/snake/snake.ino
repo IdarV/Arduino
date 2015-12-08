@@ -1,17 +1,7 @@
 /*
-
+Taken stating point in
 TFT EtchASketch
-
-This example for the Arduino screen draws a white point
-on the GLCD based on the values of 2 potentiometers.
-To clear the screen, press a button attached to pin 2.
-
-This example code is in the public domain.
-
-Created 15 April 2013 by Scott Fitzgerald
-
 http://www.arduino.cc/en/Tutorial/TFTEtchASketch
-
 */
 
 #include <TFT.h>  // Arduino LCD library
@@ -36,10 +26,12 @@ int xPos = TFTscreen.width() / 2;
 int yPos = TFTscreen.height() / 2;
 
 // initial direction
-direction currentDirection = RIGHT;
+direction currentDirection;
+int rgbColour[3];
 
 // pin the erase switch is connected to
 int erasePin = 2;
+int incColour, decColour;
 
 void setup() {
   Serial.begin(9600);
@@ -50,7 +42,14 @@ void setup() {
   // make the background black
   TFTscreen.background(0, 0, 0);
   // set starting direction
+  currentDirection = RIGHT;
+  rgbColour[0] = 255;
+  rgbColour[1] = 0;
+  rgbColour[2] = 0;
 
+  // set inccolor and deccolor;
+  decColour = 0;
+  incColour = 1;
 }
 
 void loop()
@@ -72,17 +71,17 @@ void loop()
   }
 
   if(currentDirection == UP){
-    yPos += 1;
+    yPos += 3;
   }
   else if(currentDirection == DOWN){
-    yPos -= 1;
+    yPos -= 3;
   }
 
   else if(currentDirection == LEFT){
-    xPos -= 1;
+    xPos -= 3;
   }
   else if(currentDirection == RIGHT){
-    xPos += 1;
+    xPos += 3;
   }
 
   // don't let the point go past the screen edges
@@ -104,14 +103,30 @@ void loop()
   Serial.println(currentDirection);
 
   // draw the point
-  TFTscreen.stroke(255, 255, 255);
+  TFTscreen.stroke(rgbColour[0], rgbColour[1], rgbColour[2]);
+  // setColourRgb(rgbColour[0], rgbColour[1], rgbColour[2]);
   // TFTscreen.point(xPos, yPos);
-  TFTscreen.point(xPos, yPos);
 
+  //Draw 9x9 square
+  for(int i = -1; i <= 1; i++){
+    for(int j = -1; j <= 1; j++){
+      TFTscreen.point(xPos + i, yPos + j);
+    }
+}
   // read the value of the pin, and erase the screen if pressed
   if (digitalRead(erasePin) == HIGH) {
     TFTscreen.background(0, 0, 0);
   }
+
+  // change color
+  if(rgbColour[incColour] == 255){
+    int temp = incColour;
+    incColour = (decColour == 2) ? 0 : decColour + 1;
+    decColour = temp;
+  }
+
+     rgbColour[decColour] -= 5;
+     rgbColour[incColour] += 5;
 
   delay(33);
 }

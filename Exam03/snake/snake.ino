@@ -5,13 +5,13 @@ http://www.arduino.cc/en/Tutorial/TFTEtchASketch
 */
 
 #include "Arduino.h"
+#include <SD.h>
 #include <TFT.h>  // Arduino LCD library
 #include <SPI.h>
-#include <SD.h>
+#include "adder.h"
 #include "direction.h"
 #include "board.h"
-#include "sdreader.h"
-#include "adder.h"
+//#include "sdreader.h"
 
 // initial position of the cursor
 int xPos = 28;
@@ -24,30 +24,51 @@ char* filename = "SCORES.TXT";
 int sdcs = 4;
 
 // Adder length
-int adderLength = 5;
+int adderSize = 5;
+
+int w = 126;
+int h = 160;
 
 Direction currentDirection;
 // SDReader sdReader;
-SDReader sdReader;
+// SDReader sdReader;
 Board board;
-adder_body *adder;
+// Board b = Board(*TFTscreen);
+Adder adder;
 
 void setup() {
-  // Serial.begin(9600);
+  Serial.begin(9600);
+  Serial.println("WHAT");
   // Serial.println(sizeof(int));
   // set starting direction
   currentDirection = RIGHT;
-  board = Board(126, 160);
-  adder = new adder_body[5];
-  for(int i = 0; i < adderLength; i++){
-    adder[i].xPos = 28 + 5*i;
-    adder[i].yPos = 28;
+  Serial.println("WHAT");
+  // board = Board(w, h);
+  // board = Board();
+  board.init();
+  Serial.println("WHAT");
+  // adder = new adder_body[5];
+  adder = Adder(adderSize);
+  Serial.println("WHAT");
+  for(int i = 1; i < adder.getLength() - 1; i++){
+  // for(int i = 1; i < 5 - 1; i++){
+    adder_body *b = adder.getBody(i);
+    // Serial.print(i, DEC);
+    Serial.print(" x: ");
+    Serial.println(adder.getBody(i)->xPos, DEC);
+    Serial.println("z");
 
-    board.drawPoint(adder[i].xPos, adder[i].yPos);
+
+    // adder[i].xPos = 28 + 5*i;
+    // adder[i].yPos = 28;
+
+
+    board.drawPoint(adder.getBody(i)->xPos, adder.getBody(i)->yPos);
+      // board.drawPoint(*adder_body.xPos, *adder_body.yPos);
   }
 
-  sdReader = SDReader(4);
-  sdReader.readFiles();
+  // sdReader = SDReader(4);
+  // sdReader.readFiles();
 
   // create board
   // board = Board(BOARD_HEIGHT, BOARD_WIDTH);
@@ -60,42 +81,76 @@ void loop() {
   int yValue = analogRead(A1);
 
   currentDirection = getDirection(xValue, yValue);
-  // for(int i = 0; i < 5; i++){
-  //   adder[i].xPos = 28 + 5*i;
-  //   adder[i].yPos = 28;
-  //
-  //   board.drawPoint(adder[i].xPos, adder[i].yPos);
-  // }
-  //
-  // board.moveAdder(adder[i], adder[adderLength - 1]);
-  moveAdder(currentDirection);
 
-  //board.drawPellet(currentDirection);
+//  moveAdder(currentDirection);
 }
 
 void moveAdder(Direction direction){
-  board.clearPoint(adder[0].xPos, adder[0].yPos);
+  // board.clearPoint(adder.getTailX(), adder.getTailY());
 
-  for(int i = 0; i < adderLength -1; i++){
-    adder[i].xPos = adder[i + 1].xPos;
-    adder[i].yPos = adder[i + 1].yPos;
-  }
-  switch(direction){
-    case RIGHT:
-      adder[adderLength - 1].xPos += 5;
-      break;
-    case LEFT:
-      adder[adderLength - 1].xPos -= 5;
-      break;
-    case UP:
-      adder[adderLength - 1].yPos += 5;
-      break;
-    case DOWN:
-      adder[adderLength - 1].yPos -= 5;
-      break;
-  }
+  // START
+  // for(uint8_t i = 0; i < adder.getLength() -1; i++){
+  //   // adder_body body = adder.getBody(i);
+  //   adder_body nextBody = adder.getBody(i + 1);
+  //   adder.setBody(i, nextBody); //.xPos = adder.getBody(i + 1).xPos;
+  // //  adder.setBody(i, adder.getBody(i + 1).yPos)//.yPos = adder.getBody(i + 1).yPos;
+  // }
+  // uint8_t headX;
+  // uint8_t headY;
+  // switch(direction){
+  //   case RIGHT:
+  //     headX = adder.getHeadX() + 5;
+  //     if (headX > 157) {
+  //       headX =  157;
+  //     }
+  //     adder.setHeadX(headX);
+  //     // adder[adderLength - 1].xPos += 5;
+  //     break;
+  //   case LEFT:
+  //     headX = adder.getHeadX() - 5;
+  //     if (headX < 5) {
+  //       headX = 5;
+  //     }
+  //     adder.setHeadX(headX);
+  //     // adder[adderLength - 1].xPos -= 5;
+  //     break;
+  //   case UP:
+  //     headY = adder.getHeadY() + 5;
+  //     if (headY > 120) {
+  //       headY = 120;
+  //     }
+  //     adder.setHeadY(headY);
+  //     // adder[adderLength - 1].yPos += 5;
+  //     break;
+  //   case DOWN:
+  //     headY = adder.getHeadY() - 5;
+  //     if (headY < 5) {
+  //       headY = 5;
+  //     }
+  //     adder.setHeadY(headY);
+  //     // adder[adderLength - 1].yPos -= 5;
+  //     break;
+  // }
 
-  board.drawPoint(adder[adderLength - 1].xPos, adder[adderLength - 1].yPos);
+  // END
+
+  // If behind borders, set ro boa
+  // if (adder[adderLength - 1].xPos > 157) {
+  //   (adder[adderLength - 1].xPos = 157);
+  // }
+  //
+  // if (adder[adderLength - 1].xPos < 3) {
+  //   (adder[adderLength - 1].xPos = 3);
+  // }
+  // if (adder[adderLength - 1].yPos > 122) {
+  //   (adder[adderLength - 1].yPos = 122);
+  // }
+  //
+  // if (adder[adderLength - 1].yPos < 3) {
+  //   (adder[adderLength - 1].yPos = 3);
+  // }
+
+  // board.drawPoint(adder.getHeadX(), adder.getHeadY());
   // adder[adderLength - 1]
 }
 

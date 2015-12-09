@@ -1,7 +1,53 @@
 #ifndef ADDER_H
 #define ADDER_H
+  #include "Arduino.h"
   struct adder_body{
     uint8_t xPos;
     uint8_t yPos;
+  };
+
+  class Adder{
+  private:
+    uint8_t adderLength;
+    adder_body *adder;
+  public:
+    Adder();
+    Adder(uint8_t adderLength);
+
+    adder_body* getBody(uint8_t pos){
+      return &adder[pos];
+    }
+
+    void setBody(uint8_t pos, adder_body newBody){
+      adder[pos] = newBody;
+    }
+
+    uint8_t getLength(){
+      return adderLength;
+    }
+
+    uint8_t getHeadX(){
+      return adder[adderLength - 1].xPos;
+    }
+
+    uint8_t getHeadY(){
+      return adder[adderLength - 1].yPos;
+    }
+
+    uint8_t getTailX(){
+      return adder[0].xPos;
+    }
+
+    uint8_t getTailY(){
+      return adder[0].yPos;
+    }
+
+    void setHeadX(uint8_t newHeadX){
+      adder[adderLength - 1].xPos = newHeadX;
+    }
+
+    void setHeadY(uint8_t newHeadY){
+      adder[adderLength - 1].yPos = newHeadY;
+    }
   };
 #endif

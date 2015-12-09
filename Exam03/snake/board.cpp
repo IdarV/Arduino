@@ -1,8 +1,7 @@
 // #include "Arduino.h"
+// #include "Arduino.h"
 #include "board.h"
 #include "direction.h"
-#include <TFT.h>  // Arduino LCD library
-#include <SPI.h>
 
 // pin definition for the Uno
 #define cs   10
@@ -19,25 +18,38 @@ int rgbColour[3];
 // RGB to increment and RGB to decrease
 int incColour, decColour;
 
-Board::Board(){
+void Board::init(){
+    TFTscreen.begin();
+    // make the background black
+    TFTscreen.background(200, 0, 0);
 }
 
-Board::Board(int a_height, int a_width){
-  height = a_height;
-  width = a_width;
-
-  TFTscreen.begin();
-  // make the background black
-  TFTscreen.background(0, 0, 0);
-
-  // Set starting colors
-  rgbColour[0] = 255;
-  rgbColour[1] = 0;
-  rgbColour[2] = 0;
-
-  decColour = 0;
-  incColour = 1;
-}
+// Board::Board(){
+//   // Set starting colors
+//   rgbColour[0] = 255;
+//   rgbColour[1] = 0;
+//   rgbColour[2] = 0;
+//
+//   decColour = 0;
+//   incColour = 1;
+// }
+//
+// Board::Board(int a_height, int a_width){
+//   // height = a_height;
+//   // width = a_width;
+//
+//   // TFTscreen.begin();
+//   // // make the background black
+//   // TFTscreen.background(0, 200, 0);
+//
+//   // Set starting colors
+//   // rgbColour[0] = 255;
+//   // rgbColour[1] = 0;
+//   // rgbColour[2] = 0;
+//   //
+//   // decColour = 0;
+//   // incColour = 1;
+// }
 
 void  Board::setStartPositions(int a_startingPositionX, int a_startingPositionY){
   xPos = a_startingPositionX;
@@ -45,13 +57,26 @@ void  Board::setStartPositions(int a_startingPositionX, int a_startingPositionY)
 }
 
 
-void Board::drawPoint(int xPoint, int yPoint){
+void Board::drawPoint(uint8_t xPoint, uint8_t yPoint){
+  // Serial.print("DRAWING COORD TO BOARD: ");
+  // Serial.print(xPoint, DEC);
+  // Serial.print(", ");
+  // Serial.println(yPoint, DEC);
+
   // set new stroke
-  TFTscreen.stroke(rgbColour[0], rgbColour[1], rgbColour[2]);
+  // TFTscreen.stroke(rgbColour[0], rgbColour[1], rgbColour[2]);
+  TFTscreen.stroke(255, 255, 255);
   //Draw 9x9 square
   for(int i = -2; i <= 2; i++){
     for(int j = -2; j <= 2; j++){
-      TFTscreen.point(xPoint + i, yPoint + j);
+      int x = ((int)xPoint) + i;
+      // TFTscreen.point(33, 33);
+      // Serial.print("forfor: ");
+      // Serial.print(x);
+      // Serial.print(", ");
+      // Serial.println((int)yPoint + j);
+      TFTscreen.point(((int)xPoint) + i, ((int)yPoint) + j);
+      // TFTscreen.point(x, x);
     }
   }
 
@@ -92,11 +117,11 @@ void Board::drawPellet(Direction direction){
 
 
 void Board::clearPoint(int xPoint, int yPoint){
-  TFTscreen.stroke(0, 0, 0);
+  // TFTscreen.stroke(0, 0, 0);
   //Draw 9x9 square
   for(int i = -2; i <= 2; i++){
     for(int j = -2; j <= 2; j++){
-      TFTscreen.point(xPoint + i, yPoint + j);
+      // TFTscreen.point(xPoint + i, yPoint + j);
     }
   }
 }
@@ -137,11 +162,11 @@ void Board::applyDirection(Direction direction){
 
 void Board::drawSquare(){
   // set new stroke
-  TFTscreen.stroke(rgbColour[0], rgbColour[1], rgbColour[2]);
+  // TFTscreen.stroke(rgbColour[0], rgbColour[1], rgbColour[2]);
   //Draw 9x9 square
   for(int i = -1; i <= 1; i++){
     for(int j = -1; j <= 1; j++){
-      TFTscreen.point(xPos + i, yPos + j);
+      // TFTscreen.point(xPos + i, yPos + j);
     }
   }
 }

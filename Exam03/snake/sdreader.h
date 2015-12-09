@@ -6,8 +6,7 @@ class SDReader{
 private:
   void printDirectory(File dir, int numTabs);
 public:
-  SDReader();
-  SDReader(int cspin);
+  void init(int cspin);
   bool fileExists(char* filename);
   void readFiles();
 };

@@ -2,10 +2,10 @@
 #include <SPI.h>
 #include <SD.h>
 
-SDReader::SDReader(){
-}
+// SDReader::SDReader(){
+// }
 
-SDReader::SDReader(int cspin){
+void SDReader::init(int cspin){
   SD.begin(cspin);
 }
 bool SDReader::fileExists(char* filename){

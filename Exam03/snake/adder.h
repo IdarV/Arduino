@@ -14,8 +14,8 @@
     Adder();
     Adder(uint8_t adderLength);
 
-    adder_body* getBody(uint8_t pos){
-      return &adder[pos];
+    adder_body getBody(uint8_t pos){
+      return adder[pos];
     }
 
     void setBody(uint8_t pos, adder_body newBody){

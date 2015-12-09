@@ -34,6 +34,7 @@ Board::Board(int a_height, int a_width){
   rgbColour[0] = 255;
   rgbColour[1] = 0;
   rgbColour[2] = 0;
+
   decColour = 0;
   incColour = 1;
 }
@@ -45,6 +46,25 @@ void  Board::setStartPositions(int a_startingPositionX, int a_startingPositionY)
 
 void Board::drawPellet(Direction direction){
 
+  applyDirection(direction);
+
+  drawSquare();
+
+  // set new colors
+  if(rgbColour[incColour] == 255){
+    int temp = incColour;
+    incColour = (decColour == 2) ? 0 : decColour + 1;
+    decColour = temp;
+  }
+
+  rgbColour[decColour] -= 5;
+  rgbColour[incColour] += 5;
+
+}
+
+
+void Board::applyDirection(Direction direction){
+  // Update positions
   if(direction == UP){
     yPos += 3;
   }
@@ -59,6 +79,7 @@ void Board::drawPellet(Direction direction){
     xPos += 3;
   }
 
+  // If behind borders, set ro boa
   if (xPos > 157) {
     (xPos = 157);
   }
@@ -73,25 +94,15 @@ void Board::drawPellet(Direction direction){
   if (yPos < 1) {
     (yPos = 1);
   }
+}
 
+void Board::drawSquare(){
   // set new stroke
   TFTscreen.stroke(rgbColour[0], rgbColour[1], rgbColour[2]);
-
   //Draw 9x9 square
   for(int i = -1; i <= 1; i++){
     for(int j = -1; j <= 1; j++){
       TFTscreen.point(xPos + i, yPos + j);
     }
   }
-
-  // set new colors
-  if(rgbColour[incColour] == 255){
-    int temp = incColour;
-    incColour = (decColour == 2) ? 0 : decColour + 1;
-    decColour = temp;
-  }
-
-  rgbColour[decColour] -= 5;
-  rgbColour[incColour] += 5;
-
 }

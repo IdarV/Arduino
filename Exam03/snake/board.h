@@ -7,6 +7,8 @@
   private:
     int height, width;
     int xPos, yPos;
+    void applyDirection(Direction direction);
+    void drawSquare();
   public:
     Board();
     Board(int height, int width);

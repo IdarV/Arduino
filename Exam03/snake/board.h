@@ -14,5 +14,7 @@
     Board(int height, int width);
     void setStartPositions(int x, int y);
     void drawPellet(Direction direction);
+    void drawPoint(int xPoint, int yPoint);
+    void clearPoint(int xPoint, int yPoint);
   };
 #endif

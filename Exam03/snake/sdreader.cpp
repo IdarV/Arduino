@@ -8,8 +8,8 @@ SDReader::SDReader(){
 SDReader::SDReader(int cspin){
   SD.begin(cspin);
 }
-bool SDReader::fileExists(String filename){
-  return SD.exists("highscores.txt");
+bool SDReader::fileExists(char* filename){
+ return SD.exists(filename);
 }
 
 

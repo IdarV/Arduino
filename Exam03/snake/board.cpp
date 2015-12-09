@@ -44,6 +44,28 @@ void  Board::setStartPositions(int a_startingPositionX, int a_startingPositionY)
   yPos = a_startingPositionY;
 }
 
+
+void Board::drawPoint(int xPoint, int yPoint){
+  // set new stroke
+  TFTscreen.stroke(rgbColour[0], rgbColour[1], rgbColour[2]);
+  //Draw 9x9 square
+  for(int i = -2; i <= 2; i++){
+    for(int j = -2; j <= 2; j++){
+      TFTscreen.point(xPoint + i, yPoint + j);
+    }
+  }
+
+  // set new colors
+  if(rgbColour[incColour] == 255){
+    int temp = incColour;
+    incColour = (decColour == 2) ? 0 : decColour + 1;
+    decColour = temp;
+  }
+
+  rgbColour[decColour] -= 5;
+  rgbColour[incColour] += 5;
+}
+
 void Board::drawPellet(Direction direction){
 
   applyDirection(direction);
@@ -60,6 +82,23 @@ void Board::drawPellet(Direction direction){
   rgbColour[decColour] -= 5;
   rgbColour[incColour] += 5;
 
+}
+
+// void Board::drawAdder(adder_body){
+//   for(int i = 0; i < 5; i++){
+//     drawPoint(adder[i].xPos, adder[i].yPos);
+//   }
+// }
+
+
+void Board::clearPoint(int xPoint, int yPoint){
+  TFTscreen.stroke(0, 0, 0);
+  //Draw 9x9 square
+  for(int i = -2; i <= 2; i++){
+    for(int j = -2; j <= 2; j++){
+      TFTscreen.point(xPoint + i, yPoint + j);
+    }
+  }
 }
 
 

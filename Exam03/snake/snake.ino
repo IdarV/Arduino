@@ -39,7 +39,7 @@ Board board;
 Adder adder;
 
 void setup() {
-  // Serial.begin(9600);
+  Serial.begin(9600);
   sdReader.init(sdcs);
 
   // Read from SD card
@@ -84,29 +84,32 @@ void moveAdder(Direction direction){
   }
   uint8_t headX = adder.getHeadX();
   uint8_t headY = adder.getHeadY();
+  Serial.println(headY);
   switch(direction){
     case RIGHT:
       headX += 5;
       if (headX > 157) {
-        headX =  157;
+        headX = 157;
       }
       break;
     case LEFT:
-      headX -= 5;
-      if (headX < 5) {
-        headX = 5;
+      if (headX - 5 < 3) {
+        headX = 3;
+      } else{
+        headX -= 5;
       }
       break;
     case UP:
       headY += 5;
-      if (headY > 120) {
-        headY = 120;
+      if (headY > 123) {
+        headY = 123;
       }
       break;
     case DOWN:
-      headY -= 5;
-      if (headY < 5) {
-        headY = 5;
+      if (headY - 5 < 3) {
+        headY = 3;
+      } else{
+        headY -= 5;
       }
       break;
   }
@@ -115,6 +118,7 @@ void moveAdder(Direction direction){
   adder.setHeadY(headY);
 
   board.drawPoint(adder.getHeadX(), adder.getHeadY());
+  placePellet();
 }
 
 Direction getDirection(int xValue, int yValue){
@@ -136,4 +140,12 @@ Direction getDirection(int xValue, int yValue){
   }
   //default return old direction
   return currentDirection;
+}
+
+void placePellet(){
+  randomSeed(analogRead(5));
+  int pelletX = random(30) * 5 + 8;
+  delay(10);
+  int pelletY = random(24) * 5 + 3;
+  board.drawPellet(pelletX, pelletY);
 }

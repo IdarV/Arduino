@@ -11,5 +11,6 @@
     void init();
     void drawPoint(uint8_t xPoint, uint8_t yPoint);
     void clearPoint(int xPoint, int yPoint);
+    void drawPellet(int pelletX, int pelletY);
   };
 #endif

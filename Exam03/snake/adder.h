@@ -13,6 +13,7 @@
   public:
     Adder();
     Adder(uint8_t adderLength);
+    bool isPositionedAt(int xPos, int yPos);
 
     adder_body getBody(uint8_t pos){
       return adder[pos];

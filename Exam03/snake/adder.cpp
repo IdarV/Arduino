@@ -11,3 +11,14 @@ Adder::Adder(uint8_t p_adderLength){
     adder[i].yPos = 28;
   }
 }
+
+
+bool Adder::  isPositionedAt(int xPos, int yPos){
+  for(uint8_t i = 0; i < getLength(); i++){
+    if(adder[i].xPos == xPos && adder[i].yPos == yPos){
+      return true;
+    }
+  }
+
+  return false;
+}

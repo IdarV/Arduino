@@ -62,11 +62,12 @@ void Board::clearPoint(int xPoint, int yPoint){
 }
 
 void Board::drawPellet(int pelletX, int pelletY){
-  TFTscreen.stroke(237, 123, 0);
+  TFTscreen.stroke(56, 3, 200);
   //Draw 9x9 square
   for(int i = -2; i <= 2; i++){
     for(int j = -2; j <= 2; j++){
       TFTscreen.point(pelletX + i, pelletY + j);
     }
   }
+  TFTscreen.stroke(0,0,0);
 }

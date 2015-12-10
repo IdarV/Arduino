@@ -44,7 +44,7 @@ void setup() {
 
   // Read from SD card
   if(sdReader.fileExists(filename)){
-    // Serial.println("SCORES.TXT EXISTS");
+    Serial.println("SCORES.TXT EXISTS");
   }
 
   // Set current direction
@@ -56,10 +56,16 @@ void setup() {
   // Init adder
   adder = Adder(adderSize);
 
+  // seed random func
+  randomSeed(analogRead(5));
+
   // Draw adder to screen
   for(int i = 1; i < adder.getLength() - 1; i++){
     board.drawPoint(adder.getBody(i).xPos, adder.getBody(i).yPos);
   }
+
+  // place a pellet at screen
+  placePellet();
 }
 
 void loop() {
@@ -80,45 +86,44 @@ void moveAdder(Direction direction){
     // adder_body body = adder.getBody(i);
     adder_body nextBody = adder.getBody(i + 1);
     adder.setBody(i, nextBody); //.xPos = adder.getBody(i + 1).xPos;
-  //  adder.setBody(i, adder.getBody(i + 1).yPos)//.yPos = adder.getBody(i + 1).yPos;
+    //  adder.setBody(i, adder.getBody(i + 1).yPos)//.yPos = adder.getBody(i + 1).yPos;
   }
   uint8_t headX = adder.getHeadX();
   uint8_t headY = adder.getHeadY();
   Serial.println(headY);
   switch(direction){
     case RIGHT:
-      headX += 5;
-      if (headX > 153) {
-        headX = 153;
-      }
-      break;
+    headX += 5;
+    if (headX > 153) {
+      headX = 153;
+    }
+    break;
     case LEFT:
-      if (headX - 5 < 3) {
-        headX = 3;
-      } else{
-        headX -= 5;
-      }
-      break;
+    if (headX - 5 < 3) {
+      headX = 3;
+    } else{
+      headX -= 5;
+    }
+    break;
     case UP:
-      headY += 5;
-      if (headY > 123) {
-        headY = 123;
-      }
-      break;
+    headY += 5;
+    if (headY > 123) {
+      headY = 123;
+    }
+    break;
     case DOWN:
-      if (headY - 5 < 3) {
-        headY = 3;
-      } else{
-        headY -= 5;
-      }
-      break;
+    if (headY - 5 < 3) {
+      headY = 3;
+    } else{
+      headY -= 5;
+    }
+    break;
   }
 
   adder.setHeadX(headX);
   adder.setHeadY(headY);
 
   board.drawPoint(adder.getHeadX(), adder.getHeadY());
-  placePellet();
 }
 
 Direction getDirection(int xValue, int yValue){
@@ -143,9 +148,13 @@ Direction getDirection(int xValue, int yValue){
 }
 
 void placePellet(){
-  randomSeed(analogRead(5));
-  int pelletX = random(30) * 5 + 8;
-  delay(10);
-  int pelletY = random(24) * 5 + 3;
+  int pelletX, pelletY;
+  do{
+
+    pelletX = random(30) * 5 + 8;
+    delay(10);
+    pelletY = random(24) * 5 + 3;
+  } while(adder.isPositionedAt(pelletX, pelletY));
+
   board.drawPellet(pelletX, pelletY);
 }

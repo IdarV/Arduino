@@ -10,9 +10,6 @@
 
 TFT TFTscreen = TFT(cs, dc, rst);
 
-int height, width;
-// int xPos, int yPos;
-
 // RGB
 int rgbColour[3];
 // RGB to increment and RGB to decrease
@@ -31,12 +28,6 @@ void Board::init(){
       decColour = 0;
       incColour = 1;
 }
-
-void  Board::setStartPositions(int a_startingPositionX, int a_startingPositionY){
-  xPos = a_startingPositionX;
-  yPos = a_startingPositionY;
-}
-
 
 void Board::drawPoint(uint8_t xPoint, uint8_t yPoint){
   // set new stroke
@@ -60,74 +51,12 @@ void Board::drawPoint(uint8_t xPoint, uint8_t yPoint){
   rgbColour[incColour] += 5;
 }
 
-void Board::drawPellet(Direction direction){
-
-  applyDirection(direction);
-
-  drawSquare();
-
-  // set new colors
-  if(rgbColour[incColour] == 255){
-    int temp = incColour;
-    incColour = (decColour == 2) ? 0 : decColour + 1;
-    decColour = temp;
-  }
-
-  rgbColour[decColour] -= 5;
-  rgbColour[incColour] += 5;
-
-}
-
 void Board::clearPoint(int xPoint, int yPoint){
   TFTscreen.stroke(0, 0, 0);
   //Draw 9x9 square
   for(int i = -2; i <= 2; i++){
     for(int j = -2; j <= 2; j++){
       TFTscreen.point(xPoint + i, yPoint + j);
-    }
-  }
-}
-
-void Board::applyDirection(Direction direction){
-  // Update positions
-  if(direction == UP){
-    yPos += 3;
-  }
-  else if(direction == DOWN){
-    yPos -= 3;
-  }
-
-  else if(direction == LEFT){
-    xPos -= 3;
-  }
-  else if(direction == RIGHT){
-    xPos += 3;
-  }
-
-  // If behind borders, do stuff
-  if (xPos > 157) {
-    (xPos = 157);
-  }
-
-  if (xPos < 1) {
-    (xPos = 1);
-  }
-  if (yPos > 124) {
-    (yPos = 124);
-  }
-
-  if (yPos < 1) {
-    (yPos = 1);
-  }
-}
-
-void Board::drawSquare(){
-  // set new stroke
-  TFTscreen.stroke(rgbColour[0], rgbColour[1], rgbColour[2]);
-  //Draw 9x9 square
-  for(int i = -1; i <= 1; i++){
-    for(int j = -1; j <= 1; j++){
-      TFTscreen.point(xPos + i, yPos + j);
     }
   }
 }

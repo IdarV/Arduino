@@ -33,24 +33,33 @@ int h = 160;
 
 Direction currentDirection;
 // SDReader sdReader;
-// SDReader sdReader;
+SDReader sdReader;
 Board board;
 // Board b = Board(*TFTscreen);
 Adder adder;
 
 void setup() {
-  Serial.begin(9600);
-  // Serial.println(sizeof(int));
+  // Serial.begin(9600);
+  sdReader.init(sdcs);
+
+  // Read from SD card
+  if(sdReader.fileExists(filename)){
+    // Serial.println("SCORES.TXT EXISTS");
+  }
+
+  // Set current direction
   currentDirection = RIGHT;
+
+  // Init board
   board.init();
-  // sdReader.init(4);
+
+  // Init adder
   adder = Adder(adderSize);
+
+  // Draw adder to screen
   for(int i = 1; i < adder.getLength() - 1; i++){
     board.drawPoint(adder.getBody(i).xPos, adder.getBody(i).yPos);
   }
-
-  // sdReader = SDReader(4);
-  // sdReader.readFiles();
 }
 
 void loop() {
@@ -60,7 +69,6 @@ void loop() {
   int yValue = analogRead(A1);
 
   currentDirection = getDirection(xValue, yValue);
-
   moveAdder(currentDirection);
 }
 
@@ -74,63 +82,39 @@ void moveAdder(Direction direction){
     adder.setBody(i, nextBody); //.xPos = adder.getBody(i + 1).xPos;
   //  adder.setBody(i, adder.getBody(i + 1).yPos)//.yPos = adder.getBody(i + 1).yPos;
   }
-  uint8_t headX;
-  uint8_t headY;
+  uint8_t headX = adder.getHeadX();
+  uint8_t headY = adder.getHeadY();
   switch(direction){
     case RIGHT:
-      headX = adder.getHeadX() + 5;
+      headX += 5;
       if (headX > 157) {
         headX =  157;
       }
-      adder.setHeadX(headX);
-      // adder[adderLength - 1].xPos += 5;
       break;
     case LEFT:
-      headX = adder.getHeadX() - 5;
+      headX -= 5;
       if (headX < 5) {
         headX = 5;
       }
-      adder.setHeadX(headX);
-      // adder[adderLength - 1].xPos -= 5;
       break;
     case UP:
-      headY = adder.getHeadY() + 5;
+      headY += 5;
       if (headY > 120) {
         headY = 120;
       }
-      adder.setHeadY(headY);
-      // adder[adderLength - 1].yPos += 5;
       break;
     case DOWN:
-      headY = adder.getHeadY() - 5;
+      headY -= 5;
       if (headY < 5) {
         headY = 5;
       }
-      adder.setHeadY(headY);
-      // adder[adderLength - 1].yPos -= 5;
       break;
   }
 
-  // END
-
-  // If behind borders, set ro boa
-  // if (adder[adderLength - 1].xPos > 157) {
-  //   (adder[adderLength - 1].xPos = 157);
-  // }
-  //
-  // if (adder[adderLength - 1].xPos < 3) {
-  //   (adder[adderLength - 1].xPos = 3);
-  // }
-  // if (adder[adderLength - 1].yPos > 122) {
-  //   (adder[adderLength - 1].yPos = 122);
-  // }
-  //
-  // if (adder[adderLength - 1].yPos < 3) {
-  //   (adder[adderLength - 1].yPos = 3);
-  // }
+  adder.setHeadX(headX);
+  adder.setHeadY(headY);
 
   board.drawPoint(adder.getHeadX(), adder.getHeadY());
-  // adder[adderLength - 1]
 }
 
 Direction getDirection(int xValue, int yValue){

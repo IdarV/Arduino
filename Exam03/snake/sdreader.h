@@ -4,6 +4,7 @@
 #include <SD.h>
 class SDReader{
 private:
+  int cpin;
   void printDirectory(File dir, int numTabs);
 public:
   void init(int cspin);

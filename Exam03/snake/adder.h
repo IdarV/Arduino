@@ -14,6 +14,7 @@
     Adder();
     Adder(uint8_t adderLength);
     bool isPositionedAt(int xPos, int yPos);
+    void grow();
 
     adder_body getBody(uint8_t pos){
       return adder[pos];
@@ -25,6 +26,10 @@
 
     uint8_t getLength(){
       return adderLength;
+    }
+
+    void setLength(uint8_t newLength){
+      adderLength = newLength;
     }
 
     uint8_t getHeadX(){

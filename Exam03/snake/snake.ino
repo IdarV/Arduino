@@ -29,6 +29,8 @@ int sdcs = 4;
 // Adder length
 int adderSize = 5;
 
+bool justAte = false;
+
 // Pellet properties
 Pellet pellet;
 
@@ -80,11 +82,13 @@ void loop() {
 
   currentDirection = getDirection(xValue, yValue);
   moveAdder(currentDirection);
+
+  spawnNewPelletIfSnakeIsEatingIt();
 }
 
 void moveAdder(Direction direction){
   board.clearPoint(adder.getTailX(), adder.getTailY());
-
+  
   // START
   for(uint8_t i = 0; i < adder.getLength() -1; i++){
     // adder_body body = adder.getBody(i);
@@ -124,6 +128,12 @@ void moveAdder(Direction direction){
     break;
   }
 
+
+  if(justAte){
+      adder.grow();
+      justAte = false;
+  }
+
   adder.setHeadX(headX);
   adder.setHeadY(headY);
 
@@ -159,4 +169,12 @@ void placePellet(){
   } while(adder.isPositionedAt(pellet.xPos, pellet.yPos));
 
   board.drawPellet(pellet);
+}
+
+
+void spawnNewPelletIfSnakeIsEatingIt(){
+  if(adder.getHeadX() == pellet.xPos && adder.getHeadY() == pellet.yPos){
+    justAte = true;
+    placePellet();
+  }
 }

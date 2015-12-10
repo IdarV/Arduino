@@ -4,6 +4,7 @@
   #include <TFT.h>
   #include <SPI.h>
   #include "direction.h"
+  #include "pellet.h"
 
   class Board{
   private:
@@ -11,6 +12,6 @@
     void init();
     void drawPoint(uint8_t xPoint, uint8_t yPoint);
     void clearPoint(int xPoint, int yPoint);
-    void drawPellet(int pelletX, int pelletY);
+    void drawPellet(Pellet pellet);
   };
 #endif

@@ -14,6 +14,7 @@ http://www.arduino.cc/en/Tutorial/TFTEtchASketch
 #include "direction.h"
 #include "board.h"
 #include "sdreader.h"
+#include "pellet.h"
 
 // initial position of the cursor
 int xPos = 28;
@@ -27,6 +28,9 @@ int sdcs = 4;
 
 // Adder length
 int adderSize = 5;
+
+// Pellet properties
+Pellet pellet;
 
 int w = 126;
 int h = 160;
@@ -148,13 +152,11 @@ Direction getDirection(int xValue, int yValue){
 }
 
 void placePellet(){
-  int pelletX, pelletY;
   do{
-
-    pelletX = random(30) * 5 + 8;
+    pellet.xPos = random(30) * 5 + 8;
     delay(10);
-    pelletY = random(24) * 5 + 3;
-  } while(adder.isPositionedAt(pelletX, pelletY));
+    pellet.yPos = random(24) * 5 + 3;
+  } while(adder.isPositionedAt(pellet.xPos, pellet.yPos));
 
-  board.drawPellet(pelletX, pelletY);
+  board.drawPellet(pellet);
 }

@@ -88,8 +88,8 @@ void moveAdder(Direction direction){
   switch(direction){
     case RIGHT:
       headX += 5;
-      if (headX > 157) {
-        headX = 157;
+      if (headX > 153) {
+        headX = 153;
       }
       break;
     case LEFT:

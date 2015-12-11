@@ -44,6 +44,7 @@ Adder adder;
 void setup() {
   Serial.begin(9600);
   Serial.println("HEL");
+  Serial.println(sizeof(uint8_t));
   sdReader.init(sdcs);
 
   // Read from SD card

@@ -9,7 +9,8 @@
   class Adder{
   private:
     int adderLength;
-    adder_body adder[324]; //FULL = 374, 74% = 280,
+    adder_body adder[324]; //FULL = 374, 74% = 280,18x18=324
+
   public:
     Adder();
     Adder(int adderLength);

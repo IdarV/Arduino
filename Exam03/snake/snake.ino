@@ -4,7 +4,6 @@ TFT EtchASketch
 http://www.arduino.cc/en/Tutorial/TFTEtchASketch
 */
 
-// TODO fix sdreader
 
 #include "Arduino.h"
 #include <SD.h>
@@ -15,6 +14,8 @@ http://www.arduino.cc/en/Tutorial/TFTEtchASketch
 #include "board.h"
 #include "sdreader.h"
 #include "pellet.h"
+
+// TODO: still dies at ~197 pellets eaten
 
 // initial position of the cursor
 int xPos = 28;
@@ -33,6 +34,7 @@ bool justAte = false;
 
 // Pellet properties
 Pellet pellet;
+int pelletsEaten = 0;
 
 int w = 126;
 int h = 160;
@@ -75,7 +77,7 @@ void setup() {
 }
 
 void loop() {
-  delay(80);
+  delay(120);
   // read the potentiometers on A0 and A1
   int xValue = analogRead(A0);
   int yValue = analogRead(A1);
@@ -88,7 +90,7 @@ void loop() {
 
 void moveAdder(Direction direction){
   board.clearPoint(adder.getTailX(), adder.getTailY());
-  
+
   // START
   for(uint8_t i = 0; i < adder.getLength() -1; i++){
     // adder_body body = adder.getBody(i);
@@ -98,32 +100,31 @@ void moveAdder(Direction direction){
   }
   uint8_t headX = adder.getHeadX();
   uint8_t headY = adder.getHeadY();
-  Serial.println(headY);
   switch(direction){
     case RIGHT:
-    headX += 5;
-    if (headX > 153) {
-      headX = 153;
+    headX += 7;
+    if (headX > 154) {
+      headX = 154;
     }
     break;
     case LEFT:
-    if (headX - 5 < 3) {
-      headX = 3;
+    if (headX - 7 < 7) {
+      headX = 7;
     } else{
-      headX -= 5;
+      headX -= 7;
     }
     break;
     case UP:
-    headY += 5;
-    if (headY > 123) {
-      headY = 123;
+    headY += 7;
+    if (headY > 119) {
+      headY = 119;
     }
     break;
     case DOWN:
-    if (headY - 5 < 3) {
-      headY = 3;
+    if (headY - 7 < 7) {
+      headY = 7;
     } else{
-      headY -= 5;
+      headY -= 7;
     }
     break;
   }
@@ -163,11 +164,15 @@ Direction getDirection(int xValue, int yValue){
 
 void placePellet(){
   do{
-    pellet.xPos = random(30) * 5 + 8;
+    pellet.xPos = random(21) * 7 + 7;
     delay(10);
-    pellet.yPos = random(24) * 5 + 3;
+    pellet.yPos = random(17) * 7 + 7;
   } while(adder.isPositionedAt(pellet.xPos, pellet.yPos));
 
+  Serial.print("Pellet spawned at ");
+  Serial.print(pellet.xPos);
+  Serial.print(", ");
+  Serial.println(pellet.yPos);
   board.drawPellet(pellet);
 }
 
@@ -175,6 +180,12 @@ void placePellet(){
 void spawnNewPelletIfSnakeIsEatingIt(){
   if(adder.getHeadX() == pellet.xPos && adder.getHeadY() == pellet.yPos){
     justAte = true;
+    pelletsEaten++;
+    Serial.print("Pellets eaten: ");
+    Serial.println(pelletsEaten);
+    Serial.print("sizeof(adder): ");
+    Serial.println(1 + (sizeof(adder_body) * adder.getLength()));
+    Serial.println();
     placePellet();
   }
 }

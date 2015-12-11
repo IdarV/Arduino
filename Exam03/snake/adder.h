@@ -9,7 +9,7 @@
   class Adder{
   private:
     uint8_t adderLength;
-    adder_body *adder;
+    adder_body adder[200];
   public:
     Adder();
     Adder(uint8_t adderLength);

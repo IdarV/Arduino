@@ -9,14 +9,9 @@
 TFT TFTscreen = TFT(cs, dc, rst);
 
 // RGB
-int rgbColour[3];
+uint8_t rgbColour[3];
 // RGB to increment and RGB to decrease
-int incColour, decColour;
-
-uint8_t boardBorderXLeft = 3;
-uint8_t boardBorderXRight = 157 + 1; // 22*7 + boardBorderXLeft
-uint8_t boardBorderYTop = 3;
-uint8_t boardBoarderYBottom = 122 + 1; // 17*7 + boardBorderYTop
+uint8_t incColour, decColour;
 
 void Board::init(){
     TFTscreen.begin();

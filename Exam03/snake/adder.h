@@ -8,11 +8,11 @@
 
   class Adder{
   private:
-    uint8_t adderLength;
-    adder_body adder[200];
+    int adderLength;
+    adder_body adder[324]; //FULL = 374, 74% = 280,
   public:
     Adder();
-    Adder(uint8_t adderLength);
+    Adder(int adderLength);
     bool isPositionedAt(int xPos, int yPos);
     void grow();
 
@@ -24,11 +24,11 @@
       adder[pos] = newBody;
     }
 
-    uint8_t getLength(){
+    int getLength(){
       return adderLength;
     }
 
-    void setLength(uint8_t newLength){
+    void setLength(int newLength){
       adderLength = newLength;
     }
 

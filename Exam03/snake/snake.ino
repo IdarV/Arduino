@@ -4,7 +4,6 @@ TFT EtchASketch
 http://www.arduino.cc/en/Tutorial/TFTEtchASketch
 */
 
-
 #include "Arduino.h"
 #include <SD.h>
 #include <TFT.h>  // Arduino LCD library
@@ -34,25 +33,22 @@ bool justAte = false;
 
 // Pellet properties
 Pellet pellet;
-int pelletsEaten = 0;
-
-int w = 126;
-int h = 160;
+int pelletsEaten = adderSize;
 
 Direction currentDirection;
 // SDReader sdReader;
 SDReader sdReader;
 Board board;
-// Board b = Board(*TFTscreen);
 Adder adder;
 
 void setup() {
   Serial.begin(9600);
+  Serial.println("HEL");
   sdReader.init(sdcs);
 
   // Read from SD card
   if(sdReader.fileExists(filename)){
-    Serial.println("SCORES.TXT EXISTS");
+    //Serial.println("SCORES.TXT EXISTS");
   }
 
   // Set current direction
@@ -68,9 +64,9 @@ void setup() {
   randomSeed(analogRead(5));
 
   // Draw adder to screen
-  for(int i = 1; i < adder.getLength() - 1; i++){
-    board.drawPoint(adder.getBody(i).xPos, adder.getBody(i).yPos);
-  }
+  // for(int i = 1; i < adder.getLength() - 1; i++){
+  //   board.drawPoint(adder.getBody(i).xPos, adder.getBody(i).yPos);
+  // }
 
   // place a pellet at screen
   placePellet();
@@ -93,11 +89,10 @@ void moveAdder(Direction direction){
 
   // START
   for(uint8_t i = 0; i < adder.getLength() -1; i++){
-    // adder_body body = adder.getBody(i);
     adder_body nextBody = adder.getBody(i + 1);
-    adder.setBody(i, nextBody); //.xPos = adder.getBody(i + 1).xPos;
-    //  adder.setBody(i, adder.getBody(i + 1).yPos)//.yPos = adder.getBody(i + 1).yPos;
+    adder.setBody(i, nextBody);
   }
+
   uint8_t headX = adder.getHeadX();
   uint8_t headY = adder.getHeadY();
   switch(direction){
@@ -108,8 +103,8 @@ void moveAdder(Direction direction){
     }
     break;
     case LEFT:
-    if (headX - 7 < 7) {
-      headX = 7;
+    if (headX - 7 < 28) {
+      headX = 28;
     } else{
       headX -= 7;
     }
@@ -164,15 +159,15 @@ Direction getDirection(int xValue, int yValue){
 
 void placePellet(){
   do{
-    pellet.xPos = random(21) * 7 + 7;
+    pellet.xPos = random(17) * 7 + 28;
     delay(10);
     pellet.yPos = random(17) * 7 + 7;
   } while(adder.isPositionedAt(pellet.xPos, pellet.yPos));
 
-  Serial.print("Pellet spawned at ");
-  Serial.print(pellet.xPos);
-  Serial.print(", ");
-  Serial.println(pellet.yPos);
+  // Serial.print("Pellet spawned at ");
+  // Serial.print(pellet.xPos);
+  // Serial.print(", ");
+  // Serial.println(pellet.yPos);
   board.drawPellet(pellet);
 }
 
@@ -183,9 +178,9 @@ void spawnNewPelletIfSnakeIsEatingIt(){
     pelletsEaten++;
     Serial.print("Pellets eaten: ");
     Serial.println(pelletsEaten);
-    Serial.print("sizeof(adder): ");
-    Serial.println(1 + (sizeof(adder_body) * adder.getLength()));
-    Serial.println();
+    // Serial.print("sizeof(adder): ");
+    // Serial.println(1 + (sizeof(adder_body) * adder.getLength()));
+    // Serial.println();
     placePellet();
   }
 }

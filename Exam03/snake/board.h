@@ -8,6 +8,11 @@
 
   class Board{
   private:
+  // uint8_t boardBorderXLeft = 3;
+  uint8_t boardBorderXLeft = 3 + 3*7;
+  uint8_t boardBorderXRight = 158; // 22*7 + boardBorderXLeft
+  uint8_t boardBorderYTop = 3;
+  uint8_t boardBoarderYBottom = 123; // 17*7 + boardBorderYTop
   public:
     void init();
     void drawPoint(uint8_t xPoint, uint8_t yPoint);

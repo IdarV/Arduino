@@ -5,9 +5,9 @@ http://www.arduino.cc/en/Tutorial/TFTEtchASketch
 */
 
 #include "Arduino.h"
+#include <SPI.h>
 #include <SD.h>
 #include <TFT.h>  // Arduino LCD library
-#include <SPI.h>
 #include "adder.h"
 #include "direction.h"
 #include "board.h"
@@ -19,10 +19,10 @@ int xPos = 63;
 int yPos = 63;
 
 // scores file
-char* filename = "SCORES.TXT\0";
+char *filename = "A.TXT";
 
 // SDcard cs
-int sdcs = 6;
+int sdcs = 4;
 
 // Adder length
 int adderSize = 5;
@@ -37,20 +37,20 @@ Pellet pellet;
 int pelletsEaten = adderSize;
 
 Direction currentDirection;
-// SDReader sdReader;
 SDReader sdReader;
 Board board;
 Adder adder;
 
 void setup() {
   Serial.begin(9600);
-  Serial.println(sizeof(uint8_t));
+  // Serial.println(sizeof(uint8_t));
   sdReader.init(sdcs);
   // Read from SD card
+  Serial.print(filename);
   if(sdReader.fileExists(filename)){
-    Serial.println("SCORES.TXT EXISTS");
+    Serial.println(" exists");
   } else{
-    Serial.println("SCORES.TXT DOES NOT EXIST");
+    Serial.println(" does not exist");
   }
 
   // Set current direction
@@ -110,6 +110,10 @@ void loop() {
   //     currentDirection = RIGHT;
   // }
   //
+
+
+
+
   moveAdder(currentDirection);
 
   spawnNewPelletIfSnakeIsEatingIt();
@@ -197,10 +201,10 @@ void placePellet(){
     pellet.yPos = random(16) * 7 + 14;
   } while(adder.isPositionedAt(pellet.xPos, pellet.yPos));
 
-  Serial.print("Pellet spawned at ");
-  Serial.print(pellet.xPos);
-  Serial.print(", ");
-  Serial.println(pellet.yPos);
+  // Serial.print("Pellet spawned at ");
+  // Serial.print(pellet.xPos);
+  // Serial.print(", ");
+  // Serial.println(pellet.yPos);
   board.drawPellet(pellet);
 
 }
@@ -210,8 +214,8 @@ void spawnNewPelletIfSnakeIsEatingIt(){
   if(adder.getHeadX() == pellet.xPos && adder.getHeadY() == pellet.yPos){
     justAte = true;
     pelletsEaten++;
-    Serial.print("Pellets: ");
-    Serial.println(pelletsEaten);
+    // Serial.print("Pellets: ");
+    // Serial.println(pelletsEaten);
     placePellet();
   }
 }

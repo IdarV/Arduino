@@ -7,7 +7,7 @@ http://www.arduino.cc/en/Tutorial/TFTEtchASketch
 #include "Arduino.h"
 #include <SPI.h>
 #include <SD.h>
-#include <TFT.h>  // Arduino LCD library
+#include <TFT.h>
 #include "adder.h"
 #include "direction.h"
 #include "board.h"
@@ -15,8 +15,8 @@ http://www.arduino.cc/en/Tutorial/TFTEtchASketch
 #include "pellet.h"
 
 // initial position of the cursor
-int xPos = 63;
-int yPos = 63;
+// int xPos = 63;
+// int yPos = 63;
 
 // scores file
 char *filename = "A.TXT";
@@ -27,10 +27,13 @@ int sdcs = 4;
 // Adder length
 int adderSize = 5;
 
+// Sets if the snake just ate a pellet
 bool justAte = false;
 
-int automove = 0;
-int autodir = RIGHT;
+// Uncomment for autoplaying
+bool autoPlay = true;
+// 0 == fast, 2 == superfast
+uint8_t autospeed = 2;
 
 // Pellet properties
 Pellet pellet;
@@ -54,10 +57,10 @@ void setup() {
   }
 
   // Set current direction
-  currentDirection = RIGHT;
+  // currentDirection = RIGHT;
 
   // Setup for automove
-  // currentDirection = LEFT;
+  currentDirection = LEFT;
 
   // Init board
   board.init();
@@ -74,56 +77,40 @@ void setup() {
   // }
 
   // place a pellet at screen
-  placePellet();
+  placeNewPellet();
 }
 
 void loop() {
   // FOR PLAYING
-  delay(120);
-  // read the potentiometers on A0 and A1
-  int xValue = analogRead(A0);
-  int yValue = analogRead(A1);
-
-  currentDirection = getDirection(xValue, yValue);
-
-  // // AUTOMATISATION
-  // if(adder.getHeadX() == 147 && adder.getHeadY() == 119){
-  //   moveAdder(RIGHT);
-  //   spawnNewPelletIfSnakeIsEatingIt();
-  //   for(int i = 0; i < 15; i++){
-  //     moveAdder(DOWN);
-  //     spawnNewPelletIfSnakeIsEatingIt();
-  //   }
-  //   moveAdder(LEFT);
-  //   spawnNewPelletIfSnakeIsEatingIt();
-  //   currentDirection = LEFT;
-  // }
-  // else if(adder.getHeadX() == 147){
-  //   moveAdder(UP);
-  //   spawnNewPelletIfSnakeIsEatingIt();
-  //   currentDirection = LEFT;
-  // }
-  //
-  // else if(adder.getHeadX() == 56){
-  //     moveAdder(UP);
-  //     spawnNewPelletIfSnakeIsEatingIt();
-  //     currentDirection = RIGHT;
-  // }
+  if(autoPlay){
+    automove();
+  } else{
+    delay(120);
+    int xValue = analogRead(A0);
+    int yValue = analogRead(A1);
+    currentDirection = getDirection(xValue, yValue);
+  }
 
   moveAdder(currentDirection);
 
   spawnNewPelletIfSnakeIsEatingIt();
 
-  Serial.print(adder.getHeadX());
-  Serial.print(", ");
-  Serial.println(adder.getHeadY());
-
-
-
+  while(pelletsEaten == 225){
+    board.winScreen();
+    delay(10000);
+  }
+  //
+  // Serial.print(adder.getHeadX());
+  // Serial.print(", ");
+  // Serial.println(adder.getHeadY());
 }
 
 void moveAdder(Direction direction){
-  board.clearPoint(adder.getTailX(), adder.getTailY());
+  if(autospeed == 2){
+    board.clearPointFast(adder.getTailX(), adder.getTailY());
+  } else{
+    board.clearPoint(adder.getTailX(), adder.getTailY());
+  }
 
   // START
   for(int i = 0; i < adder.getLength() -1; i++){
@@ -171,7 +158,12 @@ void moveAdder(Direction direction){
   adder.setHeadX(headX);
   adder.setHeadY(headY);
 
-  board.drawPoint(adder.getHeadX(), adder.getHeadY());
+  if(autospeed == 2){
+    board.drawPointFast(adder.getHeadX(), adder.getHeadY());
+  } else{
+    board.drawPoint(adder.getHeadX(), adder.getHeadY());
+  }
+
 }
 
 Direction getDirection(int xValue, int yValue){
@@ -195,7 +187,7 @@ Direction getDirection(int xValue, int yValue){
   return currentDirection;
 }
 
-void placePellet(){
+void placeNewPellet(){
   do{
     pellet.xPos = random(15) * 7 + 56;
     delay(10);
@@ -206,10 +198,16 @@ void placePellet(){
   // Serial.print(pellet.xPos);
   // Serial.print(", ");
   // Serial.println(pellet.yPos);
-  board.drawPellet(pellet);
+
+
+  // board.drawPellet(pellet);if(autospeed == 2){
+  if(autospeed == 2){
+    board.drawPelletFast(pellet);
+  } else{
+    board.drawPellet(pellet);
+  }
 
 }
-
 
 void spawnNewPelletIfSnakeIsEatingIt(){
   if(adder.getHeadX() == pellet.xPos && adder.getHeadY() == pellet.yPos){
@@ -217,6 +215,31 @@ void spawnNewPelletIfSnakeIsEatingIt(){
     pelletsEaten++;
     Serial.print("Pellets: ");
     Serial.println(pelletsEaten);
-    placePellet();
+    placeNewPellet();
+  }
+}
+
+void automove(){
+  if(adder.getHeadX() == 147 && adder.getHeadY() == 119){
+    moveAdder(RIGHT);
+    spawnNewPelletIfSnakeIsEatingIt();
+    for(int i = 0; i < 15; i++){
+      moveAdder(DOWN);
+      spawnNewPelletIfSnakeIsEatingIt();
+    }
+    moveAdder(LEFT);
+    spawnNewPelletIfSnakeIsEatingIt();
+    currentDirection = LEFT;
+  }
+  else if(adder.getHeadX() == 147){
+    moveAdder(UP);
+    spawnNewPelletIfSnakeIsEatingIt();
+    currentDirection = LEFT;
+  }
+
+  else if(adder.getHeadX() == 56){
+    moveAdder(UP);
+    spawnNewPelletIfSnakeIsEatingIt();
+    currentDirection = RIGHT;
   }
 }

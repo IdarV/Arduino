@@ -16,7 +16,11 @@
   public:
     void init();
     void drawPoint(uint8_t xPoint, uint8_t yPoint);
+    void drawPointFast(uint8_t xPoint, uint8_t yPoint);
     void clearPoint(int xPoint, int yPoint);
+    void clearPointFast(int xPoint, int yPoint);
     void drawPellet(Pellet pellet);
+    void drawPelletFast(Pellet pellet);
+    void winScreen();
   };
 #endif

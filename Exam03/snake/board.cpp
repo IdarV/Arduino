@@ -60,6 +60,23 @@ void Board::drawPoint(uint8_t xPoint, uint8_t yPoint){
   rgbColour[incColour] += 5;
 }
 
+void Board::drawPointFast(uint8_t xPoint, uint8_t yPoint){
+  // set new stroke
+  TFTscreen.stroke(rgbColour[0], rgbColour[1], rgbColour[2]);
+
+  //Draw 9x9 square
+  TFTscreen.point(xPoint, yPoint);
+  // set new colors
+  if(rgbColour[incColour] == 255){
+    int temp = incColour;
+    incColour = (decColour == 2) ? 0 : decColour + 1;
+    decColour = temp;
+  }
+
+  rgbColour[decColour] -= 5;
+  rgbColour[incColour] += 5;
+}
+
 void Board::clearPoint(int xPoint, int yPoint){
   TFTscreen.stroke(0, 0, 0);
   //Draw 9x9 square
@@ -68,6 +85,11 @@ void Board::clearPoint(int xPoint, int yPoint){
       TFTscreen.point(xPoint + i, yPoint + j);
     }
   }
+}
+
+void Board::clearPointFast(int xPoint, int yPoint){
+  TFTscreen.stroke(0, 0, 0);
+  TFTscreen.point(xPoint, yPoint);
 }
 
 void Board::drawPellet(Pellet pellet){
@@ -79,4 +101,17 @@ void Board::drawPellet(Pellet pellet){
     }
   }
   TFTscreen.stroke(0,0,0);
+}
+
+void Board::drawPelletFast(Pellet pellet){
+  TFTscreen.stroke(56, 3, 200);
+  TFTscreen.point(pellet.xPos, pellet.yPos);
+  TFTscreen.stroke(0,0,0);
+}
+
+void Board::winScreen(){
+  TFTscreen.background(0, 255, 0);
+  TFTscreen.stroke(255, 255, 255);
+  TFTscreen.setCursor(80, 80);
+  TFTscreen.print("u win");
 }

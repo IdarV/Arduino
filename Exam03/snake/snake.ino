@@ -46,11 +46,11 @@ void setup() {
   // Serial.println(sizeof(uint8_t));
   sdReader.init(sdcs);
   // Read from SD card
-  Serial.print(filename);
   if(sdReader.fileExists(filename)){
-    Serial.println(" exists");
+    Serial.print(filename);
+    // Serial.println(" exists");
   } else{
-    Serial.println(" does not exist");
+    // Serial.println(" does not exist");
   }
 
   // Set current direction
@@ -104,19 +104,20 @@ void loop() {
   //   currentDirection = LEFT;
   // }
   //
-  // else if(adder.getHeadX() == 49){
+  // else if(adder.getHeadX() == 56){
   //     moveAdder(UP);
   //     spawnNewPelletIfSnakeIsEatingIt();
   //     currentDirection = RIGHT;
   // }
-  //
-
-
-
 
   moveAdder(currentDirection);
 
   spawnNewPelletIfSnakeIsEatingIt();
+
+  Serial.print(adder.getHeadX());
+  Serial.print(", ");
+  Serial.println(adder.getHeadY());
+
 
 
 }
@@ -140,8 +141,8 @@ void moveAdder(Direction direction){
     }
     break;
     case LEFT:
-    if (headX - 7 < 49) { // was 28
-      headX = 49;
+    if (headX - 7 < 56) {
+      headX = 56;
     } else{
       headX -= 7;
     }
@@ -196,9 +197,9 @@ Direction getDirection(int xValue, int yValue){
 
 void placePellet(){
   do{
-    pellet.xPos = random(16) * 7 + 49;
+    pellet.xPos = random(15) * 7 + 56;
     delay(10);
-    pellet.yPos = random(16) * 7 + 14;
+    pellet.yPos = random(15) * 7 + 14;
   } while(adder.isPositionedAt(pellet.xPos, pellet.yPos));
 
   // Serial.print("Pellet spawned at ");
@@ -214,8 +215,8 @@ void spawnNewPelletIfSnakeIsEatingIt(){
   if(adder.getHeadX() == pellet.xPos && adder.getHeadY() == pellet.yPos){
     justAte = true;
     pelletsEaten++;
-    // Serial.print("Pellets: ");
-    // Serial.println(pelletsEaten);
+    Serial.print("Pellets: ");
+    Serial.println(pelletsEaten);
     placePellet();
   }
 }

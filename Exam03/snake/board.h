@@ -9,7 +9,7 @@
   class Board{
   private:
   // uint8_t boardBorderXLeft = 3;
-  uint8_t boardBorderXLeft = 3 + 6*7;
+  uint8_t boardBorderXLeft = 3 + 7*7;
   uint8_t boardBorderXRight = 158; // 22*7 + boardBorderXLeft
   uint8_t boardBorderYTop = 3 + 7;
   uint8_t boardBoarderYBottom = 123; // 16*7 + boardBorderYTop

@@ -14,17 +14,15 @@ http://www.arduino.cc/en/Tutorial/TFTEtchASketch
 #include "sdreader.h"
 #include "pellet.h"
 
-// TODO: still dies at ~197 pellets eaten
-
 // initial position of the cursor
-int xPos = 49;
-int yPos = 49;
+int xPos = 63;
+int yPos = 63;
 
 // scores file
-char* filename = "SCORES.TXT";
+char* filename = "SCORES.TXT\0";
 
 // SDcard cs
-int sdcs = 4;
+int sdcs = 6;
 
 // Adder length
 int adderSize = 5;
@@ -46,20 +44,20 @@ Adder adder;
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("HEL");
   Serial.println(sizeof(uint8_t));
   sdReader.init(sdcs);
-
   // Read from SD card
   if(sdReader.fileExists(filename)){
     Serial.println("SCORES.TXT EXISTS");
+  } else{
+    Serial.println("SCORES.TXT DOES NOT EXIST");
   }
 
   // Set current direction
-  // currentDirection = RIGHT;
+  currentDirection = RIGHT;
 
   // Setup for automove
-  currentDirection = LEFT;
+  // currentDirection = LEFT;
 
   // Init board
   board.init();
@@ -81,45 +79,40 @@ void setup() {
 
 void loop() {
   // FOR PLAYING
-  // delay(120);
-  // // read the potentiometers on A0 and A1
-  // int xValue = analogRead(A0);
-  // int yValue = analogRead(A1);
-  //
-  // currentDirection = getDirection(xValue, yValue);
-  // // moveAdder(currentDirection);
-  // Serial.print(adder.getHeadX());
-  // Serial.print(", ");
-  // Serial.println(adder.getHeadY());
+  delay(120);
+  // read the potentiometers on A0 and A1
+  int xValue = analogRead(A0);
+  int yValue = analogRead(A1);
+
+  currentDirection = getDirection(xValue, yValue);
 
   // // AUTOMATISATION
-  if(adder.getHeadX() == 147 && adder.getHeadY() == 119){
-    moveAdder(RIGHT);
-    spawnNewPelletIfSnakeIsEatingIt();
-    for(int i = 0; i < 18; i++){
-      moveAdder(DOWN);
-      spawnNewPelletIfSnakeIsEatingIt();
-    }
-    currentDirection = LEFT;
-  }
-  else if(adder.getHeadX() == 147){
-    moveAdder(UP);
-    spawnNewPelletIfSnakeIsEatingIt();
-    currentDirection = LEFT;
-  }
-
-  else if(adder.getHeadX() == 42){
-      moveAdder(UP);
-      spawnNewPelletIfSnakeIsEatingIt();
-      currentDirection = RIGHT;
-  }
-
+  // if(adder.getHeadX() == 147 && adder.getHeadY() == 119){
+  //   moveAdder(RIGHT);
+  //   spawnNewPelletIfSnakeIsEatingIt();
+  //   for(int i = 0; i < 15; i++){
+  //     moveAdder(DOWN);
+  //     spawnNewPelletIfSnakeIsEatingIt();
+  //   }
+  //   moveAdder(LEFT);
+  //   spawnNewPelletIfSnakeIsEatingIt();
+  //   currentDirection = LEFT;
+  // }
+  // else if(adder.getHeadX() == 147){
+  //   moveAdder(UP);
+  //   spawnNewPelletIfSnakeIsEatingIt();
+  //   currentDirection = LEFT;
+  // }
+  //
+  // else if(adder.getHeadX() == 49){
+  //     moveAdder(UP);
+  //     spawnNewPelletIfSnakeIsEatingIt();
+  //     currentDirection = RIGHT;
+  // }
+  //
   moveAdder(currentDirection);
 
   spawnNewPelletIfSnakeIsEatingIt();
-
-
-  Serial.println(pelletsEaten);
 
 
 }
@@ -143,8 +136,8 @@ void moveAdder(Direction direction){
     }
     break;
     case LEFT:
-    if (headX - 7 < 42) { // was 28
-      headX = 42;
+    if (headX - 7 < 49) { // was 28
+      headX = 49;
     } else{
       headX -= 7;
     }
@@ -156,8 +149,8 @@ void moveAdder(Direction direction){
     }
     break;
     case DOWN:
-    if (headY - 7 < 7) {
-      headY = 7;
+    if (headY - 7 < 14) {
+      headY = 14;
     } else{
       headY -= 7;
     }
@@ -199,7 +192,7 @@ Direction getDirection(int xValue, int yValue){
 
 void placePellet(){
   do{
-    pellet.xPos = random(19) * 7 + 28;
+    pellet.xPos = random(16) * 7 + 49;
     delay(10);
     pellet.yPos = random(16) * 7 + 14;
   } while(adder.isPositionedAt(pellet.xPos, pellet.yPos));
@@ -217,11 +210,8 @@ void spawnNewPelletIfSnakeIsEatingIt(){
   if(adder.getHeadX() == pellet.xPos && adder.getHeadY() == pellet.yPos){
     justAte = true;
     pelletsEaten++;
-    Serial.print("Pellets eaten: ");
+    Serial.print("Pellets: ");
     Serial.println(pelletsEaten);
-    // Serial.print("sizeof(adder): ");
-    // Serial.println(1 + (sizeof(adder_body) * adder.getLength()));
-    // Serial.println();
     placePellet();
   }
 }

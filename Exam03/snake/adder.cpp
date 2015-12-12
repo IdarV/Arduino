@@ -7,8 +7,8 @@ Adder::Adder(int p_adderLength){
   adderLength = p_adderLength;
   int j = 0;
   for(uint8_t i = 0; i < getLength(); i++){
-    adder[i].xPos = 28 + 7*i;
-    adder[i].yPos = 28;
+    adder[i].xPos = 49 + 7*i;
+    adder[i].yPos = 14;
   }
 }
 

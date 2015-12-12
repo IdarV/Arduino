@@ -2,6 +2,7 @@
 #define SDREADER_H
 #include "Arduino.h"
 #include <SD.h>
+#include <SPI.h>
 class SDReader{
 private:
   int cpin;

@@ -22,5 +22,6 @@
     void drawPellet(Pellet pellet);
     void drawPelletFast(Pellet pellet);
     void winScreen();
+    void setScore(uint8_t score);
   };
 #endif

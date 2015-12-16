@@ -36,6 +36,26 @@ void Board::init(){
       // Draw left border
       TFTscreen.line(boardBorderXRight, boardBorderYTop, boardBorderXRight, boardBoarderYBottom);
 
+      // Write score
+      TFTscreen.setCursor(10, 10);
+      TFTscreen.print("Score");
+      setScore(0);
+
+
+}
+
+void Board::setScore(uint8_t score){
+  TFTscreen.setCursor(10, 20);
+  if(score != 0){
+    TFTscreen.stroke(0, 0, 0);
+    TFTscreen.print(score - 1);
+  }
+  TFTscreen.setCursor(10, 20);
+
+  TFTscreen.stroke(rgbColour[0], rgbColour[1], rgbColour[2]);
+  TFTscreen.print(score);
+
+
 }
 
 void Board::drawPoint(uint8_t xPoint, uint8_t yPoint){

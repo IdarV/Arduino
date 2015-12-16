@@ -14,15 +14,13 @@ http://www.arduino.cc/en/Tutorial/TFTEtchASketch
 #include "sdreader.h"
 #include "pellet.h"
 
-// initial position of the cursor
-// int xPos = 63;
-// int yPos = 63;
-
 // scores file
 char *filename = "A.TXT";
 
 // SDcard cs
 int sdcs = 4;
+
+int soundPin = 7;
 
 // Adder length
 int adderSize = 5;
@@ -37,7 +35,7 @@ uint8_t autospeed = 2;
 
 // Pellet properties
 Pellet pellet;
-int pelletsEaten = adderSize;
+uint8_t pelletsEaten = 0;
 
 Direction currentDirection;
 SDReader sdReader;
@@ -95,7 +93,7 @@ void loop() {
 
   spawnNewPelletIfSnakeIsEatingIt();
 
-  while(pelletsEaten == 225){
+  while(pelletsEaten == 223){
     board.winScreen();
     delay(10000);
   }
@@ -106,7 +104,7 @@ void loop() {
 }
 
 void moveAdder(Direction direction){
-  if(autospeed == 2){
+  if(autospeed == 2 && autoPlay){
     board.clearPointFast(adder.getTailX(), adder.getTailY());
   } else{
     board.clearPoint(adder.getTailX(), adder.getTailY());
@@ -158,9 +156,9 @@ void moveAdder(Direction direction){
   adder.setHeadX(headX);
   adder.setHeadY(headY);
 
-  if(autospeed == 2){
+  if(autospeed == 2 && autoPlay){
     board.drawPointFast(adder.getHeadX(), adder.getHeadY());
-  } else{
+  } else {
     board.drawPoint(adder.getHeadX(), adder.getHeadY());
   }
 
@@ -201,7 +199,7 @@ void placeNewPellet(){
 
 
   // board.drawPellet(pellet);if(autospeed == 2){
-  if(autospeed == 2){
+  if(autospeed == 2 && autoPlay){
     board.drawPelletFast(pellet);
   } else{
     board.drawPellet(pellet);
@@ -216,6 +214,8 @@ void spawnNewPelletIfSnakeIsEatingIt(){
     Serial.print("Pellets: ");
     Serial.println(pelletsEaten);
     placeNewPellet();
+    tone(7, 800, 250);
+    board.setScore(pelletsEaten);
   }
 }
 

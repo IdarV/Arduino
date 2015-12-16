@@ -8,7 +8,12 @@
 
 #define score_str "Score"
 #define high_str "High"
-#define uwin_str "u win"
+#define uwin_str "GAMEOVER"
+#define newHighscore "New highscore!"
+// static String score_str = "Score";
+// static String high_str = "High";
+// static String uwin_str = "GAMEOVER";
+// static String newHighscore = "New highscore!";
 
 TFT TFTscreen = TFT(cs, dc, rst);
 
@@ -152,9 +157,22 @@ void Board::drawPelletFast(Pellet pellet){
   TFTscreen.stroke(0,0,0);
 }
 
-void Board::winScreen(){
-  TFTscreen.background(0, 255, 0);
+void Board::winScreen(uint8_t highscore, bool isNewHighscore){
+  TFTscreen.setTextSize(3);
+  TFTscreen.background(random(255), random(255), random(255));
   TFTscreen.stroke(255, 255, 255);
-  TFTscreen.setCursor(80, 80);
+  TFTscreen.setCursor(0, 40);
   TFTscreen.print(uwin_str);
+
+  TFTscreen.setCursor(0, 80);
+  TFTscreen.setTextSize(2);
+
+  TFTscreen.print(score_str);
+  TFTscreen.print(": ");
+  TFTscreen.print(highscore);
+  if(isNewHighscore){
+  TFTscreen.setTextSize(1);
+    TFTscreen.setCursor(0, 100);
+    TFTscreen.print(newHighscore);
+  }
 }

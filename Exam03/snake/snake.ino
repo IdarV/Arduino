@@ -25,6 +25,8 @@ int sdcs = 4;
 // Adder length
 int adderSize = 5;
 
+uint8_t highscore;
+
 // Sets if the snake just ate a pellet
 bool justAte = false;
 
@@ -50,7 +52,7 @@ void setup() {
   // Serial.println(sizeof(uint8_t));
   // Init from SD card
   sdReader.init(sdcs);
-  uint8_t h = sdReader.readHighscore();
+  highscore = sdReader.readHighscore();
   // if(sdReader.fileExists(filename)){
   //   Serial.print(filename);
   //   // Serial.println(" exists");
@@ -80,7 +82,7 @@ void setup() {
 
   // place a pellet at screen
   placeNewPellet();
-  board.setHighScore(h);
+  board.setHighScore(highscore);
 }
 
 void loop() {
@@ -99,8 +101,7 @@ void loop() {
   spawnNewPelletIfSnakeIsEatingIt();
 
   while(pelletsEaten == 223){
-    board.winScreen();
-    delay(10000);
+    die();
   }
 
 
@@ -147,7 +148,8 @@ void moveAdder(Direction direction){
     break;
     case DOWN:
     if (headY - 7 < 14) {
-      headY = 14;
+      // headY = 14;
+      die();
     } else{
       headY -= 7;
     }
@@ -221,7 +223,7 @@ void spawnNewPelletIfSnakeIsEatingIt(){
     // Serial.print("Pellets: ");
     // Serial.println(pelletsEaten);
     placeNewPellet();
-    // tone(7, 800, 250);
+    tone(7, 800, 250);
     board.setScore(pelletsEaten);
   }
 }
@@ -248,5 +250,12 @@ void automove(){
     moveAdder(UP);
     spawnNewPelletIfSnakeIsEatingIt();
     currentDirection = RIGHT;
+  }
+}
+
+void die(){
+  while(true){
+    board.winScreen(pelletsEaten, pelletsEaten > highscore); // pelletsEaten > highscore
+    delay(3000);
   }
 }

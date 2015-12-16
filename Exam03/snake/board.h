@@ -1,6 +1,6 @@
 #ifndef BOARD_H
 #define BOARD_H
-  // #include "Arduino.h"
+  #include "Arduino.h"
   #include <TFT.h>
   #include <SPI.h>
   #include "direction.h"
@@ -21,7 +21,7 @@
     void clearPointFast(int xPoint, int yPoint);
     void drawPellet(Pellet pellet);
     void drawPelletFast(Pellet pellet);
-    void winScreen();
+    void winScreen(uint8_t highscore, bool isNewHighscore);
     void setScore(uint8_t score);
     void setHighScore(uint8_t highscore);
   };

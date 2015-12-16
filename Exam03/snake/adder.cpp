@@ -1,9 +1,6 @@
 #include "adder.h"
 
-Adder::Adder(){
-
-}
-Adder::Adder(int p_adderLength){
+void Adder::init(int p_adderLength){
   adderLength = p_adderLength;
   int j = 0;
   for(uint8_t i = 0; i < getLength(); i++){

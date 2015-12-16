@@ -15,12 +15,12 @@ http://www.arduino.cc/en/Tutorial/TFTEtchASketch
 #include "pellet.h"
 
 // scores file
-char *filename = "A.TXT";
+// char *filename = "A.TXT";
 
 // SDcard cs
 int sdcs = 4;
 
-int soundPin = 7;
+// int soundPin = 7;
 
 // Adder length
 int adderSize = 5;
@@ -28,8 +28,10 @@ int adderSize = 5;
 // Sets if the snake just ate a pellet
 bool justAte = false;
 
+File highscoreFile;
+
 // Uncomment for autoplaying
-bool autoPlay = true;
+bool autoPlay = false;
 // 0 == fast, 2 == superfast
 uint8_t autospeed = 2;
 
@@ -44,15 +46,17 @@ Adder adder;
 
 void setup() {
   Serial.begin(9600);
+  // Serial.println(pelletsEaten);
   // Serial.println(sizeof(uint8_t));
+  // Init from SD card
   sdReader.init(sdcs);
-  // Read from SD card
-  if(sdReader.fileExists(filename)){
-    Serial.print(filename);
-    // Serial.println(" exists");
-  } else{
-    // Serial.println(" does not exist");
-  }
+  uint8_t h = sdReader.readHighscore();
+  // if(sdReader.fileExists(filename)){
+  //   Serial.print(filename);
+  //   // Serial.println(" exists");
+  // } else{
+  //   // Serial.println(" does not exist");
+  // }
 
   // Set current direction
   // currentDirection = RIGHT;
@@ -64,7 +68,7 @@ void setup() {
   board.init();
 
   // Init adder
-  adder = Adder(adderSize);
+  adder.init(adderSize);
 
   // seed random func
   randomSeed(analogRead(5));
@@ -76,6 +80,7 @@ void setup() {
 
   // place a pellet at screen
   placeNewPellet();
+  board.setHighScore(h);
 }
 
 void loop() {
@@ -97,7 +102,9 @@ void loop() {
     board.winScreen();
     delay(10000);
   }
-  //
+
+
+
   // Serial.print(adder.getHeadX());
   // Serial.print(", ");
   // Serial.println(adder.getHeadY());
@@ -211,10 +218,10 @@ void spawnNewPelletIfSnakeIsEatingIt(){
   if(adder.getHeadX() == pellet.xPos && adder.getHeadY() == pellet.yPos){
     justAte = true;
     pelletsEaten++;
-    Serial.print("Pellets: ");
-    Serial.println(pelletsEaten);
+    // Serial.print("Pellets: ");
+    // Serial.println(pelletsEaten);
     placeNewPellet();
-    tone(7, 800, 250);
+    // tone(7, 800, 250);
     board.setScore(pelletsEaten);
   }
 }

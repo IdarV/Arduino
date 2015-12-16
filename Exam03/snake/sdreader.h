@@ -3,14 +3,14 @@
 #include "Arduino.h"
 #include <SPI.h>
 #include <SD.h>
+
 class SDReader{
 private:
-  int cpin;
-  Sd2Card card;
-  void printDirectory(File dir, int numTabs);
+  // int cpin;
+  //Sd2Card card;
+  File highFile;
 public:
   void init(int cspin);
-  bool fileExists(char* filename);
-  void readFiles();
+  uint8_t readHighscore();
 };
 #endif

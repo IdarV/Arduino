@@ -6,6 +6,10 @@
 #define dc   9
 #define rst  8
 
+#define score_str "Score"
+#define high_str "High"
+#define uwin_str "u win"
+
 TFT TFTscreen = TFT(cs, dc, rst);
 
 // RGB
@@ -38,7 +42,7 @@ void Board::init(){
 
       // Write score
       TFTscreen.setCursor(10, 10);
-      TFTscreen.print("Score");
+      TFTscreen.print(score_str);
       setScore(0);
 
 
@@ -56,6 +60,16 @@ void Board::setScore(uint8_t score){
   TFTscreen.print(score);
 
 
+}
+
+void Board::setHighScore(uint8_t highscore){
+  TFTscreen.stroke(0, 72, 255);
+  TFTscreen.setCursor(10, 50);
+  TFTscreen.print(high_str);
+  TFTscreen.setCursor(10, 60);
+  TFTscreen.print(score_str);
+  TFTscreen.setCursor(10, 70);
+  TFTscreen.print(highscore);
 }
 
 void Board::drawPoint(uint8_t xPoint, uint8_t yPoint){
@@ -133,5 +147,5 @@ void Board::winScreen(){
   TFTscreen.background(0, 255, 0);
   TFTscreen.stroke(255, 255, 255);
   TFTscreen.setCursor(80, 80);
-  TFTscreen.print("u win");
+  TFTscreen.print(uwin_str);
 }

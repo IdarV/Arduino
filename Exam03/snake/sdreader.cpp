@@ -3,6 +3,8 @@
 #define highscorefile_str "A.TXT"
 #define notsd_str "!sd"
 #define sd_str "sd"
+#define nofile_str "no file"
+#define file_str "file"
 
 void SDReader::init(int cspin){
   // cpin = cspin;
@@ -18,14 +20,14 @@ uint8_t SDReader::readHighscore(){
   uint8_t high = 0;
 
   if(highFile) {
-    Serial.print(notsd_str);
+    Serial.print(file_str);
     // read from the file once
     if (highFile.available()) {
       high = (uint8_t) highFile.parseInt();
     }
     highFile.close();
   } else{
-    Serial.println(highscorefile_str);
+    Serial.println(nofile_str);
   }
   return high;
 }

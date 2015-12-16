@@ -18,58 +18,67 @@ uint8_t rgbColour[3];
 uint8_t incColour, decColour;
 
 void Board::init(){
-    TFTscreen.begin();
-    // make the background black
-    TFTscreen.background(0, 0, 0);
+  TFTscreen.begin();
+  // make the background black
+  TFTscreen.background(0, 0, 0);
 
-      // Set starting colors
-      rgbColour[0] = 255;
-      rgbColour[1] = 0;
-      rgbColour[2] = 0;
+  // Set starting colors
+  rgbColour[0] = 255;
+  rgbColour[1] = 0;
+  rgbColour[2] = 0;
 
-      decColour = 0;
-      incColour = 1;
+  decColour = 0;
+  incColour = 1;
 
-      TFTscreen.stroke(255, 255, 255);
-      // Draw top border left->right
-      TFTscreen.line(boardBorderXLeft, boardBorderYTop, boardBorderXRight, boardBorderYTop);
-      // Draw right border top->bottom
-      TFTscreen.line(boardBorderXLeft, boardBorderYTop, boardBorderXLeft, boardBoarderYBottom);
-      // Draw bottom border left->right
-      TFTscreen.line(boardBorderXLeft, boardBoarderYBottom, boardBorderXRight, boardBoarderYBottom);
-      // Draw left border
-      TFTscreen.line(boardBorderXRight, boardBorderYTop, boardBorderXRight, boardBoarderYBottom);
+  TFTscreen.stroke(255, 255, 255);
+  // Draw top border left->right
+  TFTscreen.line(boardBorderXLeft, boardBorderYTop, boardBorderXRight, boardBorderYTop);
+  // Draw right border top->bottom
+  TFTscreen.line(boardBorderXLeft, boardBorderYTop, boardBorderXLeft, boardBoarderYBottom);
+  // Draw bottom border left->right
+  TFTscreen.line(boardBorderXLeft, boardBoarderYBottom, boardBorderXRight, boardBoarderYBottom);
+  // Draw left border
+  TFTscreen.line(boardBorderXRight, boardBorderYTop, boardBorderXRight, boardBoarderYBottom);
 
-      // Write score
-      TFTscreen.setCursor(10, 10);
-      TFTscreen.print(score_str);
-      setScore(0);
+  // Write score
+  TFTscreen.setCursor(10, 10);
+  TFTscreen.print(score_str);
+  setScore(0);
 
 
+  TFTscreen.stroke(255, 255, 255);
+  TFTscreen.setCursor(10, 50);
+  TFTscreen.print(high_str);
+  TFTscreen.setCursor(10, 60);
+  TFTscreen.print(score_str);
 }
 
 void Board::setScore(uint8_t score){
-  TFTscreen.setCursor(10, 20);
+  TFTscreen.setTextSize(3);
+  TFTscreen.setCursor(0, 20);
   if(score != 0){
     TFTscreen.stroke(0, 0, 0);
     TFTscreen.print(score - 1);
   }
-  TFTscreen.setCursor(10, 20);
-
+  TFTscreen.setCursor(0, 20);
   TFTscreen.stroke(rgbColour[0], rgbColour[1], rgbColour[2]);
   TFTscreen.print(score);
+
+  // Reset cursor size
+  TFTscreen.setTextSize(1);
 
 
 }
 
 void Board::setHighScore(uint8_t highscore){
+
   TFTscreen.stroke(0, 72, 255);
-  TFTscreen.setCursor(10, 50);
-  TFTscreen.print(high_str);
-  TFTscreen.setCursor(10, 60);
-  TFTscreen.print(score_str);
-  TFTscreen.setCursor(10, 70);
+  TFTscreen.setCursor(0, 70);
+
+  TFTscreen.setTextSize(3);
   TFTscreen.print(highscore);
+
+  TFTscreen.setTextSize(1);
 }
 
 void Board::drawPoint(uint8_t xPoint, uint8_t yPoint){

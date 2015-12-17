@@ -183,6 +183,10 @@ void moveAdder(Direction direction){
     break;
   }
 
+  if(adder.isPositionedAt(headX, headY)){
+    isDead = true;
+  }
+
   // If snake just ate a pellet, make it bigger
   if(justAte){
       adder.grow();

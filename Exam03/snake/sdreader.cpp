@@ -36,17 +36,9 @@ void SDReader::setHighscore(uint8_t highscore){
   highFile = SD.open(highscorefile_str, FILE_WRITE);
 
   if(highFile) {
-    Serial.println("of");
-    // if (highFile.available()) {
-      Serial.println("ha");
-      highFile.println((int)highscore);
-    // }
+    highFile.println((int)highscore);
     highFile.close();
   } else{
     Serial.println(nofile_str);
   }
 }
-
-// sd.remove
-// sd.open(wilename, filewrite?)
-// sd.write

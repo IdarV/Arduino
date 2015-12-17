@@ -10,10 +10,6 @@
 #define high_str "High"
 #define uwin_str "GAMEOVER"
 #define newHighscore "New highscore!"
-// static String score_str = "Score";
-// static String high_str = "High";
-// static String uwin_str = "GAMEOVER";
-// static String newHighscore = "New highscore!";
 
 TFT TFTscreen = TFT(cs, dc, rst);
 
@@ -47,10 +43,12 @@ void Board::init(){
 
   // Write score
   TFTscreen.setCursor(10, 10);
+  TFTscreen.setTextSize(1);
   TFTscreen.print(score_str);
   setScore(0);
 
 
+    TFTscreen.setTextSize(1);
   TFTscreen.stroke(255, 255, 255);
   TFTscreen.setCursor(10, 50);
   TFTscreen.print(high_str);

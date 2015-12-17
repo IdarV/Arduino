@@ -10,7 +10,6 @@ void SDReader::init(int cspin){
   // cpin = cspin;
   if(!SD.begin(cspin)){
     Serial.println(notsd_str);
-    Serial.println(cspin);
   } else{
     Serial.println(sd_str);
   }

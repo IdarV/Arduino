@@ -6,8 +6,6 @@
 
 class SDReader{
 private:
-  // int cpin;
-  //Sd2Card card;
   File highFile;
 public:
   void init(int cspin);

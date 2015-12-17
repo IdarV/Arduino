@@ -9,7 +9,7 @@
   class Adder{
   private:
     int adderLength;
-    adder_body adder[225]; //225!
+    adder_body adder[225];
 
   public:
     void init(int adderLength);

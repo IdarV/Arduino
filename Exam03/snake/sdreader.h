@@ -10,5 +10,6 @@ private:
 public:
   void init(int cspin);
   uint8_t readHighscore();
+  void setHighscore(uint8_t);
 };
 #endif

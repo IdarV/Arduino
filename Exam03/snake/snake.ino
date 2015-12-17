@@ -32,7 +32,7 @@ bool justAte = false;
 bool isDead = false;
 
 // Set to true for autoplaying
-bool autoPlay = true;
+bool autoPlay = false;
 
 // Autospeed tells how fast to render the autoplay. 0 == normal, 2 == fast
 uint8_t autospeed = 0;
@@ -296,8 +296,13 @@ void automove(){
 
 // Shows the die screen while button is not pressed
 void die(){
+  bool newHigh = pelletsEaten > highscore;
+  if(newHigh){
+    sdReader.setHighscore(pelletsEaten);
+    highscore = pelletsEaten;
+  }
   while(digitalRead(buttonPin)){
-    board.winScreen(pelletsEaten, pelletsEaten > highscore); // pelletsEaten > highscore
+    board.winScreen(pelletsEaten, newHigh); // pelletsEaten > highscore
     delay(1000);
   }
   resetup();

@@ -19,7 +19,7 @@ uint8_t SDReader::readHighscore(){
   uint8_t high = 0;
 
   if(highFile) {
-    Serial.print(file_str);
+    Serial.println(file_str);
     // read from the file once
     if (highFile.available()) {
       high = (uint8_t) highFile.parseInt();
@@ -30,3 +30,23 @@ uint8_t SDReader::readHighscore(){
   }
   return high;
 }
+
+void SDReader::setHighscore(uint8_t highscore){
+  SD.remove(highscorefile_str);
+  highFile = SD.open(highscorefile_str, FILE_WRITE);
+
+  if(highFile) {
+    Serial.println("of");
+    // if (highFile.available()) {
+      Serial.println("ha");
+      highFile.println((int)highscore);
+    // }
+    highFile.close();
+  } else{
+    Serial.println(nofile_str);
+  }
+}
+
+// sd.remove
+// sd.open(wilename, filewrite?)
+// sd.write

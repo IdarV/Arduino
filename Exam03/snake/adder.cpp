@@ -8,16 +8,17 @@ void Adder::init(int p_adderLength){
   }
 }
 
+// Checks if adder is positioned at (xPos, yPos)
 bool Adder::isPositionedAt(int xPos, int yPos){
   for(int i = 0; i < getLength(); i++){
     if(adder[i].xPos == xPos && adder[i].yPos == yPos){
       return true;
     }
   }
-
   return false;
 }
 
+// Make snake 1 unit longer
 void Adder::grow(){
   setLength(getLength() + 1);
   for(int i = getLength() - 1; i > 0; i--){

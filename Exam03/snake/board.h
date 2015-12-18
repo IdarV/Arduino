@@ -24,5 +24,8 @@
     void winScreen(uint8_t highscore, bool isNewHighscore);
     void setScore(uint8_t score);
     void setHighScore(uint8_t highscore);
+
+  private:
+    void updateColors();
   };
 #endif
